@@ -40,7 +40,7 @@
         } else {
           console.log(username+"======="+password);
           this.$message({
-            message: '恭喜你，通过了',
+            message: '恭喜你，通过了!',
 
             type: 'success'
           });
