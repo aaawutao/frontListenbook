@@ -11,11 +11,15 @@ export default new Router({
     },{
       path: '/home ',
       name: 'Home',
-      component: ()=>import("../components/Home")
-    },{
-      path: '/hello',
-      name: 'Hello',
-      component: ()=>import("../components/HelloWorld")
+      component: ()=>import("../components/Home"),
+      children:[
+        // 嵌套路由，子路由在父路由的组件内部的路由视图中显示
+        {
+          path:'backstage_user',
+          name:'BackStage_User',
+          component: ()=>import("../components/BackStage_User")
+        }
+      ]
     }
   ]
 })
