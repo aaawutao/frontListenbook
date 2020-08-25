@@ -5,8 +5,7 @@
 </template>
 
 <script>
-import util from "../static/js/ribbon.js"
-import util1 from "../static/js/index.js"
+
 export default {
   name: 'App'
 }
@@ -14,5 +13,5 @@ export default {
 
 
 <style>
-  @import "../static/css/style.css";
+
 </style>
