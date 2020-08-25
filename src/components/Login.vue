@@ -7,6 +7,7 @@
         </div>
         <el-input v-model="user.backstage_uname" clearable placeholder="用户名"></el-input>
         <el-input v-model="user.backstage_upwd" clearable show-password placeholder="密码"></el-input>
+        <el-checkbox v-model="checked" :checked="checked">记住密码</el-checkbox>
         <div class="content_button">
           <el-button type="primary" @click="SignIn">登录</el-button>
         </div>
@@ -21,8 +22,20 @@
     name: "Login",
     data() {
       return {
-        user:{}
+        checked:false,
+        user:{backstage_uname:'',backstage_upwd:''}
       }
+    },
+    mounted(){
+      if(localStorage.getItem('backstageuser')){
+        let str=JSON.parse(localStorage.getItem('backstageuser'));
+        this.user.backstage_uname=str.backstage_uname;
+        this.user.backstage_upwd=str.backstage_upwd;
+        if(localStorage.getItem("checked")){
+            this.checked=true;
+        }
+      }
+
     },
     methods: {
       SignIn() {
@@ -45,7 +58,19 @@
                 message:response.data.message
               })
             }else{
-              //保存session的登录信息
+
+              //成功
+              console.info(this.checked);
+              if(this.checked){
+                //保存cookie
+                localStorage.setItem("backstageuser",JSON.stringify({backstage_uname:response.data.backstage_uname,backstage_upwd:response.data.backstage_upwd}));
+                localStorage.setItem("checked","true");
+              }else{
+                //删除cookie
+                localStorage.removeItem('backstageuser');
+                localStorage.removeItem("checked");
+              }
+              ////保存session的登录信息
               sessionStorage.setItem('backstageuser',JSON.stringify(response.data));
               this.$router.push({name:"Home"});
             }

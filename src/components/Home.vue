@@ -38,10 +38,11 @@
         <el-dropdown>
           <i class="el-icon-setting" style="margin-right: 15px"></i>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>查看数据</el-dropdown-item>
+            <el-dropdown-item command="">查看数据</el-dropdown-item>
+            <el-dropdown-item command="Exit">退出</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <span>王小虎</span>
+        <span>{{this.user.backstage_uname}}</span>
       </el-header>
       <el-main>
         <router-view></router-view>
@@ -60,8 +61,12 @@
     },
     methods:{
       handlerCommand:function(command){
-        this.$router.push({name:command});
-
+        if(command=="Exit"){
+          sessionStorage.removeItem("backstageuser");
+          this.$router.replace({name:"Login"});
+        }else{
+          this.$router.push({name:command});
+        }
       }
     }
 
