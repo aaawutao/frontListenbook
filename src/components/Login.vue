@@ -9,6 +9,7 @@
         <el-input v-model="user.backstage_upwd" clearable show-password placeholder="密码"></el-input>
         <div class="content_button">
           <el-button type="primary" @click="SignIn">登录</el-button>
+          <el-button type="primary" @click="a">登录1</el-button>
         </div>
       </div>
     </div>
@@ -59,7 +60,11 @@
           });
 
         }
+      },
+      a(){
+        this.$router.push({name:"Home"});
       }
+
     }
   }
 </script>
