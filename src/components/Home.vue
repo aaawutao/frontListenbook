@@ -28,7 +28,6 @@
         <span>王小虎</span>
       </el-header>
       <el-main>
-        <!-- 二级路由 -->
         <router-view></router-view>
       </el-main>
     </el-container>
