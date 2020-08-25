@@ -9,7 +9,6 @@
         <el-input v-model="user.backstage_upwd" clearable show-password placeholder="密码"></el-input>
         <div class="content_button">
           <el-button type="primary" @click="SignIn">登录</el-button>
-          <el-button type="primary" @click="a">登录1</el-button>
         </div>
       </div>
     </div>
@@ -47,24 +46,15 @@
               })
             }else{
               //保存session的登录信息
-              //localStorage.setItem('backstageuser',response.data);
-              //this.$router.push({name:"Home"});
-              console.log(username+"======="+password);
-              this.$message({
-                message: '恭喜你，通过了!!!!!',
-                type: 'success'
-              });
+              localStorage.setItem('backstageuser',response.data);
+              this.$router.push({name:"Home"});
             }
           }).catch(error=>{
             console.info(error);
           });
 
         }
-      },
-      a(){
-        this.$router.push({name:"Home"});
       }
-
     }
   }
 </script>
