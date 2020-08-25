@@ -11,8 +11,8 @@ export default new Router({
     },{
       path: '/home ',
       name: 'Home',
-      redirect:{name:'Hello'},
       component: ()=>import("../components/Home"),
+      redirect:{name:'Hello'},
       children:[
         // 嵌套路由，子路由在父路由的组件内部的路由视图中显示
         {

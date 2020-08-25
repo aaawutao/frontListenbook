@@ -1,6 +1,7 @@
 <template>
   <el-container>
     <el-aside width="200px" >
+      {{this.user.urls}}
       <el-menu :default-openeds="['1', '3']" :router="true">
         <el-submenu index="1" >
           <template slot="title"><i class="el-icon-message"></i>员工管理</template>
@@ -39,6 +40,9 @@
   import "../../static/deploy/js/index1.js"
   export default {
     name: "Home",
+    data(){
+      return {user:JSON.parse(sessionStorage.getItem("backstageuser"))}
+    },
     methods:{
       handlerCommand:function(command){
         this.$router.push({name:command});

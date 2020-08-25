@@ -46,7 +46,7 @@
               })
             }else{
               //保存session的登录信息
-              localStorage.setItem('backstageuser',response.data);
+              sessionStorage.setItem('backstageuser',JSON.stringify(response.data));
               this.$router.push({name:"Home"});
             }
           }).catch(error=>{
