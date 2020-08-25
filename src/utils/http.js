@@ -11,7 +11,7 @@ let http = axios.create({
     //允许在向服务器发送前，修改请求数据
     transformRequest: [function (data) {
     // 对 data 进行任意转换处理
-      let ret = ''
+      let ret = '';
       for (let it in data) {
         ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
       }
@@ -26,7 +26,7 @@ let http = axios.create({
     }
 
   }],*/
-})
+});
 
 // 添加请求拦截器
 http.interceptors.request.use(function (config) {

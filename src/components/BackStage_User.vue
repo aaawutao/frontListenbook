@@ -57,9 +57,9 @@
         this.queryUser();
       },methods:{
             queryUser:function () {
-              this.$axios.post("backstage/test"/*,
-                {"currentPage":this.currentPage,"pageSize":this.pagesize}*/).then(rep=>{
-                  console.log(rep.data);
+              this.$axios.post("backstage/findAll",
+                {"currentPage":this.currentPage,"pageSize":this.pagesize}).then(rep=>{
+                   console.log(rep.data);
               })
             },
       handleSizeChange(size) {
