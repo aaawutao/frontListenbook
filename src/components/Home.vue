@@ -1,7 +1,22 @@
 <template>
   <el-container>
     <el-aside width="200px" >
-      {{this.user.urls}}
+      <!--导航菜单
+         menuid menuname menuurl
+      -->
+      <el-menu  default-active="1" class="el-menu-vertical-demo" :router="true">
+        <div v-for="m in this.user.urls">
+          <el-submenu  :index="m.menuid.toString()" :route="{name:m.menuurl}" >
+            <template slot="title">
+              <span>{{m.menuname}}</span>
+            </template>
+            <div v-for="z in m.zi">
+              <el-menu-item  :index="z.menuid.toString()" :route="{name:z.menuurl}">{{z.menuname}} </el-menu-item>
+            </div>
+          </el-submenu>
+        </div>
+      </el-menu >
+      <hr/>
       <el-menu :default-openeds="['1', '3']" :router="true">
         <el-submenu index="1" >
           <template slot="title"><i class="el-icon-message"></i>员工管理</template>
