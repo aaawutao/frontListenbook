@@ -90,12 +90,8 @@
             this.queryUser();
             },
           changePro: function(val, row) {
-            console.log("val"+val);
-            console.log("标示"+row.isenable);
             this.$axios.post("backstage/updateFlag", { "backstage_userid": row.backstage_userid,"isenable": val}).then(response => {
-
-              console.log(response)
-              /*if (val == 0) {
+              if (val == 0) {
                 this.$message({
                   type: 'success',
                   message: '启用成功!'
@@ -105,7 +101,7 @@
                   type: 'info',
                   message: '已禁用!'
                 })
-              }*/
+              }
             })
           }
         }
