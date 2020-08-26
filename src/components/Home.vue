@@ -8,12 +8,13 @@
             <template slot="title">
               <span>{{m.menuname}}</span>
             </template>
-            <div v-for="z in m.zi">
+            <div v-for="z in m.children">
               <el-menu-item  :index="z.menuid.toString()" :route="{name:z.menuurl}">{{z.menuname}} </el-menu-item>
             </div>
           </el-submenu>
         </div>
       </el-menu >
+      <!---下面做路径测试-->
       <hr/>
       <el-menu :default-openeds="['1', '3']" :router="true">
         <el-submenu index="1" >
@@ -34,7 +35,7 @@
     </el-aside>
     <el-container>
       <el-header style="text-align: right; font-size: 12px">
-        <el-dropdown>
+        <el-dropdown @command="handlerCommand">
           <i class="el-icon-setting" style="margin-right: 15px"></i>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item command="">查看数据</el-dropdown-item>
@@ -61,6 +62,7 @@
     methods:{
       handlerCommand:function(command){
         if(command=="Exit"){
+          console.info(1111111);
           sessionStorage.removeItem("backstageuser");
           this.$router.replace({name:"Login"});
         }else{

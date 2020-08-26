@@ -14,6 +14,11 @@ export default new Router({
       component: () => import('../components/Home'),
       redirect: {name: 'Hello'},
       children: [
+        {
+          path: '/permissionsetting',
+          name: 'PermissionSetting',
+          component: () => import('../components/PermissionSetting')
+        },
         // 嵌套路由，子路由在父路由的组件内部的路由视图中显示
         {
           path: '/backstage_user',
