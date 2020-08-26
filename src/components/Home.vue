@@ -19,9 +19,9 @@
       <hr/>
       <el-menu :default-openeds="['1', '3']" :router="true">
         <el-submenu index="1" >
-          <template slot="title"><i class="el-icon-message"></i>员工管理</template>
+          <template slot="title"><i class="el-icon-message"></i>用户管理</template>
           <el-menu-item-group>
-            <el-menu-item index="1-1" :route="{name:'BackStage_User'}">员工管理</el-menu-item>
+            <el-menu-item index="1-1" :route="{name:'BackStage_User'}">用户查询</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-submenu index="2">
