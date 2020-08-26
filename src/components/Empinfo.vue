@@ -28,6 +28,7 @@
         :page-size="pagesize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
+        <!--修改-->
       </el-pagination>
       <el-dialog width="40%" title="修改员工" :visible="dialogVisible">
         <el-form label-width="100px" label-suffix="：" :model="empinfo" class="form" :rules="rules" ref="fm">
@@ -76,6 +77,7 @@ export default {
     return {
       dialogVisible: false,
       addVisible: false,
+      rules: {},
       empinfo: {},
       list: [], // 查询的数据
       total: 0, // 数据总数
