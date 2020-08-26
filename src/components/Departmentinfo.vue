@@ -8,8 +8,7 @@
       <el-table-column prop="dname" label="部门名称"></el-table-column>
       <el-table-column label="操作" fixed="right" width="150px">
         <template slot-scope="scope">
-          <el-button type="primary" @click="showDialog(scope.row)" icon="el-icon-edit" circle></el-button>
-          <el-button type="danger" @click="deleleById(scope.row.id,scope.$index)" icon="el-icon-delete" circle></el-button>
+          <el-button type="warning" round size="mini" icon="el-icon-edit" @click="showDialog(scope.row)"></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -32,10 +31,10 @@
     <!--添加-->
     <el-dialog width="40%" title="添加部门" :visible="addVisible">
       <el-form label-width="100px" label-suffix="：" :model="departmentinfo" class="form" :rules="rules" ref="fm">
-        <!--<el-form-item label="编号" prop="did">-->
-          <!--&lt;!&ndash; 必须去声明绑定的数据模型 &ndash;&gt;-->
-          <!--<el-input v-model="departmentinfo.did"></el-input>-->
-        <!--</el-form-item>-->
+        <el-form-item label="编号" prop="did">
+          <!-- 必须去声明绑定的数据模型 -->
+          <el-input v-model="departmentinfo.did"></el-input>
+        </el-form-item>
         <el-form-item label="姓名" prop="dname">
           <el-input v-model="departmentinfo.dname"></el-input>
         </el-form-item>
@@ -66,22 +65,26 @@ export default {
     showDialog: function (row) {
       // 显示模态窗口
       this.dialogVisible = true
-      this.emp = row
+      this.departmentinfo = row
     },
     add: function () {
       this.addVisible = false
       console.log(this.departmentinfo)
-      this.$axios.post('http://localhost:8081/backstage/departmentinfo/add', this.departmentinfo).then((response) => {
-        if (response.data > 0) { this.$message('添加成功了'); this.list[this.list.length] = this.departmentinfo; this.list.splice() } else { this.$message('添加失败了') }
+      this.$axios.post('backstage/departmentinfo/add', this.departmentinfo).then((response) => {
+        if (response.data > 0) {
+          this.$message('添加成功了'); this.list[this.list.length] = this.departmentinfo; this.list.splice()
+        } else {
+          this.$message('添加失败了')
+        }
       })
     },
     // 修改
     edit: function () {
-      alert(this.departmentinfo)
+      this.dialogVisible = false
+      console.log(this.departmentinfo)
       this.$axios.post('backstage/departmentinfo/update', this.departmentinfo).then(response => {
         if (response.data > 0) {
           this.$message('修改成功了')
-          this.dialogVisible = false
         } else { this.$message('修改失败了') }
       })
     }

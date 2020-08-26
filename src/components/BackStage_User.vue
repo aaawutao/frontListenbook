@@ -41,7 +41,6 @@
       </el-table-column>
     </el-table>
 
-
 <div class="block">
       <el-pagination
         @size-change="handleSizeChange"
@@ -58,54 +57,54 @@
 </template>
 
 <script>
-    export default {
-        name: "BackStage_User",
-      data(){
-        return {
-          list:[],//查询的数据
-          total: 0, //数据总数
-          pagesize: 3, //每页的数据条数
-          currentPage: 1 //默认
+export default {
+  name: 'BackStage_User',
+  data () {
+    return {
+      list: [], // 查询的数据
+      total: 0, // 数据总数
+      pagesize: 3, // 每页的数据条数
+      currentPage: 1 // 默认
+    }
+  },
+  created: function () {
+    this.queryUser()
+  },
+  methods: {
+    queryUser: function () {
+      this.$axios.post('backstage/findAll',
+        {'currentPage': this.currentPage, 'pageSize': this.pagesize}).then(rep => {
+        this.total = rep.data.total // 总页数
+        this.list = rep.data.list // 数据
+      })
+    },
+    handleSizeChange (size) {
+      console.log(`每页 ${size} 条`)
+      this.pagesize = size
+      this.queryUser()
+    },
+    handleCurrentChange (curPage) {
+      console.log(`当前页: ${curPage}`)
+      this.currentPage = curPage
+      this.queryUser()
+    },
+    changePro: function (val, row) {
+      this.$axios.post('backstage/updateFlag', { 'backstage_userid': row.backstage_userid, 'isenable': val}).then(response => {
+        if (val == 0) {
+          this.$message({
+            type: 'success',
+            message: '启用成功!'
+          })
+        } else {
+          this.$message({
+            type: 'info',
+            message: '已禁用!'
+          })
         }
-      },
-      created:function () {
-        this.queryUser();
-      },methods:{
-            queryUser:function () {
-              this.$axios.post("backstage/findAll",
-                {"currentPage":this.currentPage,"pageSize":this.pagesize}).then(rep=>{
-                this.total = rep.data.total; //总页数
-                this.list = rep.data.list; //数据
-
-              })
-            },
-          handleSizeChange(size) {
-              console.log(`每页 ${size} 条`);
-              this.pagesize=size;
-              this.queryUser();
-            },
-          handleCurrentChange(curPage) {
-            console.log(`当前页: ${curPage}`);
-            this.currentPage=curPage;
-            this.queryUser();
-            },
-          changePro: function(val, row) {
-            this.$axios.post("backstage/updateFlag", { "backstage_userid": row.backstage_userid,"isenable": val}).then(response => {
-              if (val == 0) {
-                this.$message({
-                  type: 'success',
-                  message: '启用成功!'
-                })
-              } else {
-                this.$message({
-                  type: 'info',
-                  message: '已禁用!'
-                })
-              }
-            })
-          }
-        }
- }
+      })
+    }
+  }
+}
 </script>
 
 <style scoped>

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!--<el-button style="float: left" type="success" @click="empinfo={},addVisible=true">添加</el-button>-->
     <el-table :data="list"  width="100%" height="550px" :stripe="true" border>
       <!-- prop显示绑定的数据的属性 -->
       <el-table-column prop="empid" label="员工编号"></el-table-column>
@@ -11,11 +12,9 @@
       <el-table-column prop="xueli" label="学历"></el-table-column>
       <el-table-column prop="empentrydate" label="入职"></el-table-column>
       <el-table-column prop="empdimissiondate" label="离职"></el-table-column>
-      <el-table-column  label="操作" fixed="right" width="100px">
+      <el-table-column label="操作" fixed="right" width="100px">
         <template slot-scope="scope">
-          <!--<el-button type="text" @click="showByrow(scope.row)">修改</el-button>
-          <el-button type="text" @click="delBytid(scope.row)" >删除</el-button>-->
-          <el-button type="danger" icon="el-icon-delete" circle></el-button>
+          <el-button type="warning" round size="mini" icon="el-icon-edit" @click="showDialog(scope.row)"></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -30,6 +29,41 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
       </el-pagination>
+      <el-dialog width="40%" title="修改员工" :visible="dialogVisible">
+        <el-form label-width="100px" label-suffix="：" :model="empinfo" class="form" :rules="rules" ref="fm">
+          <el-form-item label="员工编号" prop="empid">
+            <el-input v-model="empinfo.empid"></el-input>
+          </el-form-item>
+          <el-form-item label="员工姓名" prop="empname">
+            <el-input v-model="empinfo.empname"></el-input>
+          </el-form-item>
+          <el-form-item label="出生年月" prop="empbirth">
+            <el-input v-model="empinfo.empbirth"></el-input>
+          </el-form-item>
+          <el-form-item label="电话" prop="empphone">
+            <el-input v-model="empinfo.empphone"></el-input>
+          </el-form-item>
+          <el-form-item label="身份证编号" prop="empidentity">
+            <el-input v-model="empinfo.empidentity"></el-input>
+          </el-form-item>
+          <el-form-item label="部门编号" prop="did">
+            <el-input v-model="empinfo.did"></el-input>
+          </el-form-item>
+          <el-form-item label="学历" prop="xueli">
+            <el-input v-model="empinfo.xueli"></el-input>
+          </el-form-item>
+          <el-form-item label="入职" prop="empentrydate">
+            <el-input v-model="empinfo.empentrydate"></el-input>
+          </el-form-item>
+          <el-form-item label="离职" prop="empdimissiondate">
+            <el-input v-model="empinfo.empdimissiondate"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="edit()">确 定</el-button>
+          <el-button type="success" @click="addVisible = false">取 消</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 
@@ -40,6 +74,9 @@ export default {
   name: 'Empinfo',
   data () {
     return {
+      dialogVisible: false,
+      addVisible: false,
+      empinfo: {},
       list: [], // 查询的数据
       total: 0, // 数据总数
       pagesize: 3, // 每页的数据条数
@@ -67,19 +104,30 @@ export default {
       this.currentPage = curPage
       this.queryUser()
     },
-    changePro: function (val, row) {
-      this.$axios.post('backstage/updateFlag', { 'backstage_userid': row.backstage_userid, 'isenable': row.isenable}).then(response => {
-        if (val == 0) {
-            this.$message({
-              type: 'success',
-              message: '启用成功!'
-            })
-          } else {
-            this.$message({
-              type: 'info',
-              message: '已禁用!'
-            })
-          }
+    showDialog: function (row) {
+      // 显示模态窗口
+      this.dialogVisible = true
+      this.empinfo = row
+    },
+    add: function () {
+      this.addVisible = false
+      console.log(this.empinfo)
+      this.$axios.post('backstage/empinfo/add', this.departmentinfo).then((response) => {
+        if (response.data > 0) {
+          this.$message('添加成功了'); this.list[this.list.length] = this.departmentinfo; this.list.splice()
+        } else {
+          this.$message('添加失败了')
+        }
+      })
+    },
+    // 修改
+    edit: function () {
+      this.dialogVisible = false
+      console.log(this.empinfo)
+      this.$axios.post('backstage/empinfo/update', this.empinfo).then(response => {
+        if (response.data > 0) {
+          this.$message('修改成功了')
+        } else { this.$message('修改失败了') }
       })
     }
   }
