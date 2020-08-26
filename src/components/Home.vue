@@ -1,9 +1,7 @@
 <template>
   <el-container>
     <el-aside width="200px" >
-      <!--导航菜单
-         menuid menuname menuurl
-      -->
+
       <el-menu  default-active="1" class="el-menu-vertical-demo" :router="true">
         <div v-for="m in this.user.urls">
           <el-submenu  :index="m.menuid.toString()" :route="{name:m.menuurl}" >
