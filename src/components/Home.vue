@@ -4,12 +4,12 @@
 
       <el-menu  default-active="1" class="el-menu-vertical-demo" :router="true">
         <div v-for="m in this.user.urls">
-          <el-submenu  :index="m.menuid.toString()" :route="{name:m.menuurl}" >
+          <el-submenu  :index="m.id.toString()" :route="{name:m.menuurl}" >
             <template slot="title">
               <span>{{m.menuname}}</span>
             </template>
             <div v-for="z in m.children">
-              <el-menu-item  :index="z.menuid.toString()" :route="{name:z.menuurl}">{{z.menuname}} </el-menu-item>
+              <el-menu-item  :index="z.id.toString()" :route="{name:z.menuurl}">{{z.menuname}} </el-menu-item>
             </div>
           </el-submenu>
         </div>
@@ -44,7 +44,6 @@
     methods:{
       handlerCommand:function(command){
         if(command=="Exit"){
-          console.info(1111111);
           sessionStorage.removeItem("backstageuser");
           this.$router.replace({name:"Login"});
         }else{
