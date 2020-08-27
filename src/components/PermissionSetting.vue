@@ -38,15 +38,6 @@
 </template>
 
 <script>
-  //menuid menuname menuurl
-  /**
-   *id: 1, menuid
-   parentId: -1, menuparentid
-   label: '一级 1',
-   children:
-   *
-   *
-   * */
   export default {
     name: 'PermissionSetting',
     data() {
@@ -56,9 +47,9 @@
         treeMenus: [],
         multiProps: {
           children: 'children',
-          label: 'menuname',
-          id:'menuid',
-        }
+          label: 'menuname'
+        },
+        did:''
       };
     },
     mounted(){
@@ -80,22 +71,33 @@
       //获取部门所拥有的权限
       permissionset (did) {
         this.logstate = true;
-        this.$axios.post("backstage/menu/getids", {"did": did}).then(response => {
+        this.did=did;
+        this.$axios.post("backstage/menu/getids", {"did": this.did}).then(response => {
           let ids = new Array();
           for (let i in response.data) {
             ids[i] = response.data[i].menuid;
           }
           //设置值
           this.$refs.tree.setCheckedKeys(ids);
+          console.info(ids);
         });
       },
       handleClose () {
         this.logstate = false;
+        this.did='';
       },
       edit () {
-        alert(this.$refs.tree.getCheckedKeys());
-      },
+        this.$axios.post("backstage/menu/edit", {"did": this.did,ids:this.$refs.tree.getCheckedKeys()}).then(response => {
+          if(response.data==1){
+            this.handleClose ();
+            this.$message({
+              message: '权限修改成功',
+              type: 'success'
+            });
+          }
+        });
 
+      },
       clickDeal (currentObj, treeStatus) {
         this.clickCheck(currentObj, treeStatus, this.$refs.tree)
       },
