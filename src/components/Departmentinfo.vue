@@ -57,7 +57,10 @@ export default {
       dialogVisible: false,
       addVisible: false,
       departmentinfo: {},
-      rules: {},
+      rules: {
+        did: {required: true, message: '不可为空', trigger: ['blur', 'change']},
+        dname: {required: true, message: '不可为空', trigger: ['blur', 'change']}
+      },
       list: []
     }
   },
