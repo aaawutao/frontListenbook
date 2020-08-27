@@ -15,6 +15,16 @@ export default new Router({
       redirect: {name: 'Hello'},
       children: [
         {
+          path:'/programinfo',
+          name:'Programinfo',
+          component:()=>import('../components/Programinfo')
+        },
+        {
+          path:'/programtype',
+          name:'Programtype',
+          component:()=>import('../components/Programtype')
+        },
+        {
           path: '/permissionsetting',
           name: 'PermissionSetting',
           component: () => import('../components/PermissionSetting')
@@ -37,7 +47,7 @@ export default new Router({
           name: 'Topupsetinfo',
           component: () => import('../components/Topupsetinfo')
         }, {
-          path: '/hello',
+          path: '/hello',//主页提示页面
           name: 'Hello',
           component: () => import('../components/HelloWorld')
         }

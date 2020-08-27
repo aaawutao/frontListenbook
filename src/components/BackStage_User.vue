@@ -127,7 +127,6 @@
         let timestamp=Math.round((datetime/1000).toString());
         this.user.backstage_uname=timestamp;
         this.user.backstage_upwd=timestamp;
-
       },
       closeDialog:function(){//关闭dialog
         this.dialogVisible=false;
