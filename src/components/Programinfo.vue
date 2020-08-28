@@ -69,9 +69,7 @@
       </el-drawer>
 
       <el-table style="text-align: center" :data="list" width="100%" height="550px" :stripe="true"  border>
-        <!--编号-->
-        <el-table-column prop="pname"  label="姓名"></el-table-column>
-
+       <el-table-column prop="pname"  label="姓名"></el-table-column>
         <el-table-column label="封面图">
           <template slot-scope="scope">
             <img :src="scope.row" style="width: 40px;height: 40px;vertical-align: middle;">
