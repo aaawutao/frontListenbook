@@ -61,7 +61,8 @@
       </el-table-column>
       <el-table-column prop="backstage_js" label="详情">
         <template slot-scope="scope">
-          <div style="text-align: center"><a class="el-icon-zoom-in" href="#"></a></div>
+        <!--  <div style="text-align: center"><a class="el-icon-zoom-in" href="#"></a></div>-->
+          <el-button icon="el-icon-search"   circle></el-button>
         </template>
       </el-table-column>
 
@@ -150,6 +151,10 @@
               this.show=false;
               this.did=null;
               this.dialogVisible=false;
+              this.$message({
+                type: 'info',
+                message: '操作成功!'
+              })
               this.queryUser();
             }
           })
