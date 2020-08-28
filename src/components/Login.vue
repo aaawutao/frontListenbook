@@ -60,7 +60,6 @@
             }else{
 
               //成功
-              console.info(this.checked);
               if(this.checked){
                 //保存cookie
                 localStorage.setItem("backstageuser",JSON.stringify({backstage_uname:response.data.backstage_uname,backstage_upwd:response.data.backstage_upwd}));

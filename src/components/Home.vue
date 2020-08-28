@@ -1,7 +1,6 @@
 <template>
   <el-container>
     <el-aside width="200px" >
-
       <el-menu  default-active="1" class="el-menu-vertical-demo" :router="true">
         <div v-for="m in this.user.urls">
           <el-submenu  :index="m.id.toString()" :route="{name:m.menuurl}" >
@@ -20,7 +19,7 @@
         <el-dropdown @command="handlerCommand">
           <i class="el-icon-setting" style="margin-right: 15px"></i>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="">查看数据</el-dropdown-item>
+            <el-dropdown-item command="Personal">查看数据</el-dropdown-item>
             <el-dropdown-item command="Exit">退出</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>

@@ -25,6 +25,11 @@ export default new Router({
           component:()=>import('../components/Programtype')
         },
         {
+          path: '/personal',
+          name: 'Personal',
+          component: () => import('../components/Personal')
+        },
+        {
           path: '/permissionsetting',
           name: 'PermissionSetting',
           component: () => import('../components/PermissionSetting')
@@ -47,7 +52,7 @@ export default new Router({
           name: 'Topupsetinfo',
           component: () => import('../components/Topupsetinfo')
         }, {
-          path: '/hello',//主页提示页面
+          path: '/hello',
           name: 'Hello',
           component: () => import('../components/HelloWorld')
         }

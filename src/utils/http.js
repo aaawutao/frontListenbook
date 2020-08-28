@@ -4,18 +4,19 @@ let http = axios.create({
     // 访问的根路径
     baseURL:'http://localhost:8081/',
     // 请求超时时间
-    timeout:5000,
+    timeout:8000,
     // 是否携带凭证
     withCredentials:true,
     responseType:"json",
     //允许在向服务器发送前，修改请求数据
     transformRequest: [function (data) {
-    // 对 data 进行任意转换处理
+      //不是表单提交
+      //返回
       let ret = '';
       for (let it in data) {
         ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
       }
-      return ret
+      return ret;
   }],
  /* transformResponse: [function (data) {
     // 对 data 进行任意转换处理
