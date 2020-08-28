@@ -7,8 +7,8 @@
         :direction="direction"
         :before-close="handleClose"
         size="70%">
-        <el-table :data="chapters">
-          <el-table-column prop="ctid" label="编号"></el-table-column>
+        <el-table :data="chapters" border="1">
+         <!-- <el-table-column prop="ctid" label="编号"></el-table-column>-->
           <el-table-column prop="title" label="标题"></el-table-column>
           <el-table-column prop="artist" label="作者"></el-table-column>
           <el-table-column prop="src" label="音频路径"></el-table-column>
@@ -44,8 +44,8 @@
          size="50%">
         <div>
           <!--详情页面-->
-          <el-table :data="details">
-            <el-table-column prop="pid" label="编号"></el-table-column>
+          <el-table :data="details" border="1">
+            <el-table-column prop="pid" label="编号" ></el-table-column>
             <el-table-column prop="pname"  label="姓名"></el-table-column>
             <el-table-column prop="pintroduction" label="介绍"></el-table-column>
             <el-table-column prop="ptname" label="类型"></el-table-column>
