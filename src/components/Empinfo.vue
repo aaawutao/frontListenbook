@@ -7,7 +7,6 @@
       <el-table-column label="出生年月" prop="empbirth"></el-table-column>
       <el-table-column label="电话" prop="empphone"></el-table-column>
       <el-table-column label="身份证编号" prop="empidentity"></el-table-column>
-      <el-table-column label="部门编号" prop="did"></el-table-column>
       <el-table-column label="学历" prop="xueli"></el-table-column>
       <el-table-column label="入职" prop="empentrydate"></el-table-column>
       <el-table-column label="离职" prop="empdimissiondate"></el-table-column>
@@ -29,9 +28,6 @@
     </el-pagination>
     <el-dialog :title="title" :visible.sync="dialogFormVisible">
       <el-form :model="empinfo" label-suffix=": "  label-width="100px" :rules="rules" ref="fm">
-        <el-form-item label="员工编号" prop="empid">
-          <el-input v-model="empinfo.empid"></el-input>
-        </el-form-item>
         <el-form-item label="员工姓名" prop="empname">
           <el-input v-model="empinfo.empname"></el-input>
         </el-form-item>
@@ -44,16 +40,11 @@
         <el-form-item label="身份证编号" prop="empidentity">
           <el-input v-model="empinfo.empidentity"></el-input>
         </el-form-item>
-        <el-form-item label="部门编号" prop="did">
-          <el-input v-model="empinfo.did"></el-input>
-        </el-form-item>
         <el-form-item label="学历" prop="xueli">
           <el-input v-model="empinfo.xueli"></el-input>
         </el-form-item>
         <el-form-item label="入职" prop="empentrydate">
-            <el-input v-model="empinfo.empentrydate">
-              <!--<el-date-picker v-model="value1" type="datetime" placeholder="选择日期时间"></el-date-picker>-->
-            </el-input>
+          <el-input v-model="empinfo.empentrydate"></el-input>
         </el-form-item>
         <el-form-item label="离职" prop="empdimissiondate">
           <el-input v-model="empinfo.empdimissiondate"></el-input>
@@ -61,11 +52,10 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="saves(),dialogFormVisible = false">添加</el-button>
-        <el-button type="primary" @click="saves2(),dialogFormVisible = false">修改</el-button>
+        <el-button type="primary" @click="update(),dialogFormVisible = false">修改</el-button>
         <el-button @click="dialogFormVisible = false">取 消</el-button>
       </div>
     </el-dialog>
-
   </div>
 </template>
 
@@ -77,13 +67,14 @@ export default {
       pickerOptions: {
         shortcuts: [{
           text: '今天',
-          onClick(picker) {
-            picker.$emit('pick', new Date());
+          onClick (picker) {
+            picker.$emit('pick', new Date())
           }
         }]
       },
       value1: '',
       dialogFormVisible: false,
+      dialogFormVisible2: false,
       title: '',
       empinfo: {},
       list: [],
@@ -97,14 +88,30 @@ export default {
       // 默认每页显示的条数（可修改）
       PageSize: 5,
       rules: {
-        empid: {required: true, message: '不可为空', trigger: ['blur', 'change']},
-        empname: {required: true, message: '不可为空', trigger: ['blur', 'change']},
-        empbirth: {required: true, message: '不可为空', trigger: ['blur', 'change']},
-        empphone: {required: true, message: '不可为空', trigger: ['blur', 'change']},
-        empidentity: {required: true, message: '不可为空', trigger: ['blur', 'change']},
-        did: {required: true, message: '不可为空', trigger: ['blur', 'change']},
-        xueli: {required: true, message: '不可为空', trigger: ['blur', 'change']}
-        // empentrydate: {required: true, message: '不可为空', trigger: ['blur', 'change']}
+        empname: [
+          {required: true, message: '不能为空', trigger: 'blur'},
+          {required: true,
+            pattern: /^[\u4e00-\u9fa5]+$/,
+            message: '只能输入汉字',
+            trigger: 'blur'}
+        ],
+        empphone: [
+          {required: true, message: '不能为空', trigger: 'blur'},
+          {required: true, pattern: /^[0-9]*$/, message: '只能输入数字', trigger: 'blur'},
+          {required: true, pattern: /^[1][358]\d{9}$/, message: '13-15-18开头的长度为11位', trigger: 'blur'}
+        ],
+        empidentity: [
+          {required: true, message: '不能为空', trigger: 'blur'},
+          {required: true, pattern: /^[0-9]*$/, message: '只能输入数字', trigger: 'blur'},
+          {required: true, pattern: /^[4][1]\d{16}$/, message: '41开头的长度为18位', trigger: 'blur'}
+        ],
+        xueli: [
+          {required: true, message: '不能为空', trigger: 'blur'},
+          {required: true,
+            pattern: /^[\u4e00-\u9fa5]+$/,
+            message: '只能输入汉字',
+            trigger: 'blur'}
+        ]
       }
     }
   },
@@ -156,7 +163,7 @@ export default {
         this.listall()
       })
     },
-    saves2: function () {
+    update: function () {
       console.log(this.empinfo)
       this.$axios.post('backstage/empinfo/update', this.empinfo).then(response => {
         if (response.data > 0) {
