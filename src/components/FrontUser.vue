@@ -68,9 +68,7 @@
 
         })*/
       },methods: {
-        dd:function () {
-          console.log("1111");
-        },
+
         queryFrontUser:function () {
           this.$axios.post("backstage/frontuser/frontUserfindAll",
             {"currentPage":this.currentPage,"pageSize":this.pagesize}

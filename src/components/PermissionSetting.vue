@@ -64,7 +64,7 @@
       },
       //获取部门 注意 箭头函数才能设置到值
       getDepartment () {
-        this.$axios.get("backstage/departmentinfo/departmentinfoAll").then(response => {
+        this.$axios.get("backstage/departmentinfo/depfindAll").then(response => {
           this.tableData = response.data;
         })
       },

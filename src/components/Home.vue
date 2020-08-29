@@ -39,8 +39,14 @@
     name: "Home",
     data(){
       return {user:JSON.parse(sessionStorage.getItem("backstageuser"))}
+    },created:function () {
+      // this.dd()
+      // setInterval(this.dd, 1000);
     },
     methods:{
+      dd:function(){
+        console.log("1111");
+      },
       handlerCommand:function(command){
         if(command=="Exit"){
           sessionStorage.removeItem("backstageuser");
