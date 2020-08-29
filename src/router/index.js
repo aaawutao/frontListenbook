@@ -60,6 +60,12 @@ export default new Router({
           path: '/hello',
           name: 'Hello',
           component: () => import('../components/HelloWorld')
+        },
+        //buy充值显示
+        {
+          path: '/buy',
+          name: 'Buy',
+          component: () => import('../components/Buy')
         }
       ]
     }
