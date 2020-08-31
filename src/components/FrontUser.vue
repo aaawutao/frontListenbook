@@ -61,14 +61,7 @@
         },created:function () {
         this.queryFrontUser();
 
-       /* this.dd();
-        //设置定时器
-        setInterval(this.dd, 5000);*/
-        /*this.$nextTick(() => {
-
-        })*/
       },methods: {
-
         queryFrontUser:function () {
           this.$axios.post("backstage/frontuser/frontUserfindAll",
             {"currentPage":this.currentPage,"pageSize":this.pagesize}

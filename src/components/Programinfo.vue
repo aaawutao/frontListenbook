@@ -7,11 +7,11 @@
         :direction="direction"
         :before-close="handleClose"
         size="70%">
-        <el-table :data="chapters" border="1">
+        <el-table :data="chapters" :border="true">
          <!-- <el-table-column prop="ctid" label="编号"></el-table-column>-->
           <el-table-column prop="title" label="标题"></el-table-column>
           <el-table-column prop="artist" label="作者"></el-table-column>
-          <el-table-column prop="src" label="音频路径"></el-table-column>
+          <el-table-column prop="mp3" label="音频路径"></el-table-column>
           <el-table-column prop="state" label="是否付费">
             <template slot-scope="scope">
               {{scope.row.state==0?'免费':'付费'}}
@@ -44,7 +44,7 @@
          size="50%">
         <div>
           <!--详情页面-->
-          <el-table :data="details" border="1">
+          <el-table :data="details" :border="true">
             <el-table-column prop="pid" label="编号" ></el-table-column>
             <el-table-column prop="pname"  label="姓名"></el-table-column>
             <el-table-column prop="pintroduction" label="介绍"></el-table-column>

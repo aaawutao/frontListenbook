@@ -114,7 +114,7 @@
       showDialog:function(){//展开dialog查询数据
         this.dialogVisible=true;
         //获取部门信息
-        this.$axios.post("backstage/departmentinfo/departmentinfoAll").then(response=>{
+        this.$axios.post("backstage/departmentinfo/depfindAll").then(response=>{
           this.departmentinfo=response.data;
           //获取员工信息
           this.$axios.post("backstage/empinfo/queryByDid").then(resp=>{

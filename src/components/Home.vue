@@ -38,14 +38,20 @@
   export default {
     name: "Home",
     data(){
-      return {user:JSON.parse(sessionStorage.getItem("backstageuser"))}
+      return {
+        user:JSON.parse(sessionStorage.getItem("backstageuser")),
+        timer:null,
+      }
     },created:function () {
-      // this.dd()
-      // setInterval(this.dd, 1000);
+      /*this.timer=setInterval(()=>{
+        this.getNotReadCount();
+      },5000)*/
     },
     methods:{
-      dd:function(){
-        console.log("1111");
+      getNotReadCount :function(){
+         this.$axios.post("backstage/frontuser/updateTime").then(response=>{
+            console.log(response.data);
+         })
       },
       handlerCommand:function(command){
         if(command=="Exit"){
