@@ -25,7 +25,6 @@ let http = axios.create({
     }else{
       return data.toString();
     }
-
   }],*/
 });
 
