@@ -72,7 +72,7 @@
        <el-table-column prop="pname"  label="姓名"></el-table-column>
         <el-table-column label="封面图">
           <template slot-scope="scope">
-            <img :src="scope.row" style="width: 40px;height: 40px;vertical-align: middle;">
+            <img :src="scope.row.poster" style="width: 40px;height: 40px;vertical-align: middle;">
           </template>
         </el-table-column>
         <el-table-column prop="ptname" label="类型"></el-table-column>
@@ -138,8 +138,6 @@
           this.queryList();
       },methods:{
           queryList:function () {
-            console.log("主"+this.currentPage)
-            console.log("主"+this.pagesize)
             this.$axios.post("backstage/programinfo/programinfoAll",
               {"currentPage":this.currentPage,"pageSize":this.pagesize}).then(resp=>{
                 this.total=resp.data.total;

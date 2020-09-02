@@ -15,6 +15,11 @@ export default new Router({
       redirect: {name: 'Hello'},
       children: [
         {
+          path:'/perprograminfo',
+          name:'Perprograminfo',
+          component:()=>import('../components/Perprograminfo')
+        },
+        {
           path:'/frontuser',
           name:'FrontUser',
           component:()=>import('../components/FrontUser')

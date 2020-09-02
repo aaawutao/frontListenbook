@@ -1,3 +1,4 @@
+
 <template>
   <div>
     <el-row :gutter="20">
@@ -43,6 +44,7 @@
         fd.append('file', param.file)// 文件对象
         fd.append("userid",this.user.backstage_userid);
         fd.append("username",this.user.backstage_uname);
+
         fd.append("flag",this.user.flag);
         let config = {
           headers: {
