@@ -37,34 +37,32 @@
   import "../../static/deploy/js/index1.js"
   export default {
     name: "Home",
-    data(){
+    data() {
       return {
-        user:JSON.parse(sessionStorage.getItem("backstageuser")),
-        timer:null,
+        user: JSON.parse(sessionStorage.getItem("backstageuser")),
+        timer: null,
       }
-    },created:function () {
+    }, created: function () {
       /*this.timer=setInterval(()=>{
         this.getNotReadCount();
       },5000)*/
     },
-    methods:{
-      getNotReadCount :function(){
-         this.$axios.post("backstage/frontuser/updateTime").then(response=>{
-            console.log(response.data);
-         })
+    methods: {
+      getNotReadCount: function () {
+        this.$axios.post("backstage/frontuser/updateTime").then(response => {
+          console.log(response.data);
+        })
       },
-      handlerCommand:function(command){
-        if(command=="Exit"){
+      handlerCommand: function (command) {
+        if (command == "Exit") {
           sessionStorage.removeItem("backstageuser");
-          this.$router.replace({name:"Login"});
-        }else{
-          this.$router.push({name:command});
+          this.$router.replace({name: "Login"});
+        } else {
+          this.$router.push({name: command});
         }
       }
     }
-
   }
-
 
 </script>
 

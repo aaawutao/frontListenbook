@@ -43,6 +43,9 @@
         <el-form-item label="学历" prop="xueli">
           <el-input v-model="empinfo.xueli"></el-input>
         </el-form-item>
+        <!--<el-form-item label="did" prop="did">-->
+          <!--<el-input v-model="empinfo.did"></el-input>-->
+        <!--</el-form-item>-->
         <el-form-item label="入职" prop="empentrydate">
           <el-input v-model="empinfo.empentrydate"></el-input>
         </el-form-item>
