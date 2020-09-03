@@ -1,5 +1,32 @@
 <template>
   <div>
+
+    <el-drawer
+      title="详细信息"
+      :visible.sync="drawer"
+      :direction="direction"
+      :before-close="handleClose"
+      size="50%">
+      <div>
+        <!--用户详情页面-->
+
+        <el-table :data="userdetail"  :border="true">
+          <el-table-column prop="empname"  label="姓名"></el-table-column>
+          <el-table-column prop="dname" label="部门"></el-table-column>
+          <el-table-column prop="empbirth" label="出生日期"></el-table-column>
+          <el-table-column prop="empidentity" label="身份证号"></el-table-column>
+          <el-table-column prop="empphone" label="手机号"></el-table-column>
+          <el-table-column prop="xueli" label="学历"></el-table-column>
+          <el-table-column prop="empentrydate" label="入职日期"></el-table-column>
+          <el-table-column  label="主播">
+            <template slot-scope="scope" v-if="anchorinfo!=null">
+              {{anchorinfo.petname}}
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </el-drawer>
+
     <el-button type="primary" @click="showDialog">账号分配</el-button>
     <el-dialog width="30%" @close="closeDialog()" title="账号分配" :visible="dialogVisible">
       <el-form label-width="100px" label-suffix="：" class="form">
@@ -61,21 +88,10 @@
       </el-table-column>
       <el-table-column prop="backstage_js" label="详情">
         <template slot-scope="scope">
-        <!--  <div style="text-align: center"><a class="el-icon-zoom-in" href="#"></a></div>-->
-          <el-button icon="el-icon-search"   circle></el-button>
+          <el-button icon="el-icon-search" @click="querydsc(scope.row)"   circle></el-button>
         </template>
       </el-table-column>
 
-      <el-table-column prop="backstage_photo" label="头像" width="150">
-        <template slot-scope="scope">
-          <img :src="scope.row.backstage_photo" style="width: 40px;height: 40px;vertical-align: middle;">
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" fixed="right" width="100px">
-        <template slot-scope="scope">
-          <el-button type="danger" icon="el-icon-delete" circle></el-button>
-        </template>
-      </el-table-column>
     </el-table>
 
 
@@ -105,12 +121,35 @@
         show:false,//是否隐藏div
         radio:"0",//单选按钮存储id
         user:{backstage_uname:"",backstage_upwd:""},//账号和密码
-      }
+        drawer:false,
+        chapter:false,
+        direction: 'rtl',
+        userdetail:[],
+        anchorinfo:{},
+    }
     },
     created: function() {
       this.queryUser();
     },
     methods: {
+      handleClose(done) {
+        this.$confirm('确认关闭？')//关闭抽屉
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
+      },
+      querydsc:function(row){
+        this.drawer=true;
+        this.direction= 'btt';
+        this.$axios.post("backstage/queryByUserdetails",{"backstage_userid":row.backstage_userid}).then(resp=>{
+          this.userdetail=resp.data;
+          this.$axios.post("backstage/queryBz",{"bfid":row.backstage_userid}).then(resp=>{
+            this.anchorinfo=resp.data;
+          })
+
+        })
+      },
       showDialog:function(){//展开dialog查询数据
         this.dialogVisible=true;
         //获取部门信息

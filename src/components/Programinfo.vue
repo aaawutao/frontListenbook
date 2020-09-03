@@ -147,6 +147,7 @@
         handleSizeChange(size) {
           this.pagesize=size;
           this.queryList();
+
         },
         handleCurrentChange(curPage) {
           this.currentPage=curPage;
