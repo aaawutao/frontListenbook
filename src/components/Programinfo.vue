@@ -8,7 +8,7 @@
         :before-close="handleClose"
         size="70%">
         <el-table :data="chapters" :border="true">
-         <!-- <el-table-column prop="ctid" label="编号"></el-table-column>-->
+
           <el-table-column prop="title" label="标题"></el-table-column>
           <el-table-column prop="artist" label="作者"></el-table-column>
           <el-table-column prop="mp3" label="音频路径"></el-table-column>
@@ -27,7 +27,7 @@
             @size-change="handleSize"
             @current-change="handleCurrent"
             :current-page="currentPage"
-            :page-sizes="[5, 10, 20]"
+            :page-sizes="[5]"
             :page-size="pagesize"
             layout="total, sizes, prev, pager, next, jumper"
             :total="total">
@@ -86,7 +86,7 @@
         </el-table-column>
         <el-table-column label="章节目录">
           <template slot-scope="scope">
-            <el-button icon="el-icon-search"  @click="querychapters(scope.row)" circle></el-button>
+            <el-button icon="el-icon-search"  @click="querychapters(scope.row.pid)" circle></el-button>
           </template>
         </el-table-column>
         <el-table-column   prop="pstatus" label="上下架">
@@ -132,6 +132,7 @@
             direction: 'rtl',//设置默认
             details:[],
             chapters:[],
+            id:"",
 
           }
         },created:function(){
@@ -162,22 +163,23 @@
           })
         },
         //章节目录
-        querychapters:function(row){
+        querychapters:function(pid){
           this.chapter=true;
-          this.direction= 'rtl'
+          this.direction= 'rtl';
+          this.id=pid;
          this.$axios.post("backstage/chapterinfo/chapterinfoQuery",
-            {"currentPage":this.currentPage,"pageSize":this.pagesize,"pid":row.pid}).then(resp=>{
+            {"currentPage":this.currentPage,"pageSize":this.pagesize,"pid":this.id}).then(resp=>{
               console.log(resp.data.list);
               this.total=resp.data.total;
               this.chapters=resp.data.list;
           })
-        },handleSize:function(){
+        },handleSize:function(size){
           this.pagesize=size;
-          this.querychapters();
+          this.querychapters(this.id);
         },
-        handleCurrent:function(){
+        handleCurrent:function(curPage){
           this.currentPage=curPage;
-          this.querychapters();
+          this.querychapters(this.id);
         },
         handleClose(done) {
           this.$confirm('确认关闭？')
