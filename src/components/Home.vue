@@ -19,7 +19,7 @@
         <el-dropdown @command="handlerCommand">
           <i class="el-icon-setting" style="margin-right: 15px"></i>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="Personal">查看数据</el-dropdown-item>
+            <el-dropdown-item command="Personal">个人信息</el-dropdown-item>
             <el-dropdown-item command="Exit">退出</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>

@@ -1,149 +1,220 @@
 <template>
   <div>
-    <el-tabs type="border-card">
-      <el-tab-pane label="用户信息">
-        <el-col :span="8">
-          <div class="grid-content bg-purple">
-            <img src="http://localhost:9999/fileclient/staticfile/0/abc/photo/1598580948773.gif" width="100" height="100"></img>
-            <!--{{this.user}}-->
-          </div>
-        </el-col>
-        <el-form ref="form" :model="sizeForm" label-width="80px" size="mini">
-          <el-form-item label="用户名">
-            <span>{{this.user.backstage_uname}}</span>
+    <el-tabs type="border-card" v-model="activeTab"  @tab-click="checkeduser">
+      <el-tab-pane  label="用户信息" name="userdetails">
+      <div v-show="show1">
+        <el-form  label-suffix="："  label-width="400px" class="form" >
+          <el-form-item label="头像" prop="empphone">
+            <template slot-scope="scope">
+              <img :src="userdetail.backstage_photo" style="width: 70px;height: 70px;">
+            </template>
           </el-form-item>
-          <el-form-item label="用户员工">
-            <span>{{this.user.empid}}</span>
+          <el-form-item label="账号" prop="empphone">
+            <span>{{userdetail.backstage_uname}}</span>
           </el-form-item>
-          <el-form-item label="账户类型">
-            <span>{{this.user.backstage_type==0?"管理":"主播"}}</span>
+          <el-form-item label="主播昵称" prop="empphone">
+            <span>{{userdetail.petname}}</span>
           </el-form-item>
-        </el-form>
-      </el-tab-pane>
-      <el-tab-pane label="修改密码">
-        <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-          <el-form-item label="用户名">
-            <span>{{this.user.backstage_uname}}</span>
+          <el-form-item label="真实姓名" prop="empname">
+            <span>{{userdetail.empname}}</span>
           </el-form-item>
-          <el-form-item label="原密码">
-            <span>{{this.user.backstage_upwd="********"}}</span>
+          <el-form-item label="手机号" prop="empphone">
+            <span>{{userdetail.empphone}}</span>
           </el-form-item>
-          <el-form-item label="新密码" prop="pass">
-            <el-input style="width: 30%;" type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+          <el-form-item label="学历" prop="empphone">
+            <span>{{userdetail.xueli}}</span>
           </el-form-item>
-          <el-form-item label="确认密码" prop="checkPass">
-            <el-input style="width: 30%;" type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+          <el-form-item label="身份证号" prop="empphone">
+            <span>{{userdetail.empidentity}}</span>
+          </el-form-item>
+          <el-form-item label="个人介绍" prop="empphone">
+            <span>{{userdetail.backstage_js}}</span>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
-            <el-button @click="resetForm('ruleForm')">重置</el-button>
+            <el-button type="primary" @click="isshow" round>修改信息</el-button>
           </el-form-item>
         </el-form>
-      </el-tab-pane>
-    </el-tabs>
-    <el-row :gutter="20">
-
-      <el-col :span="16">
-        <div class="grid-content bg-purple">
-        图片上传 / 音频上传
-        <el-upload
-          class="upload-demo"
-          ref="upload"
-          action=""
-          drag
-          :http-request="httpRequest"
-           >
-          <i class="el-icon-upload"></i>
-          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-          <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-        </el-upload>
-        <hr/>
       </div>
-      </el-col>
+      </el-tab-pane>
 
-    </el-row>
 
+      <el-tab-pane label="修改密码" name="updatepwd">
+        <div>
+          <el-form :model="rulefrom" ref="rulefrom" :rules="rules" label-suffix="：" class="form">
+            <el-form-item label="当前密码" prop="pwd">
+              <el-input type="password"  v-model="rulefrom.pwd" style="width:25%"></el-input>
+            </el-form-item>
+            <el-form-item label="新 密 码  " prop="newpwd">
+              <el-input type="password" v-model="rulefrom.newpwd" style="width:25%"></el-input>
+            </el-form-item>
+            <el-form-item label="确认密码" prop="affirm">
+              <el-input type="password" v-model="rulefrom.affirm" style="width:25%"></el-input>
+            </el-form-item>
+            <el-form-item >
+              <el-button type="primary" @click="updatepwd('rulefrom')" round>提交</el-button>
+              <el-button type="warning" @click="restpwd('rulefrom')" round>取消</el-button>
+
+            </el-form-item>
+
+          </el-form>
+        </div>
+      </el-tab-pane>
+
+      <!--修改个人信息-->
+      <div id="app" v-show="show">
+        <el-form  label-suffix="：" :model="userdetail"  ref="userdetail"  label-width="400px" class="form" >
+          <el-form-item label="头像" prop="empphone">
+            <template slot-scope="scope">
+              <img :src="userdetail.backstage_photo" style="width: 70px;height: 70px;">
+              <el-upload
+                class="upload-demo"
+                ref="upload"
+                action=""
+                :auto-upload="true"
+                :multiple="false"
+                :limit="1"
+                :http-request="httpRequest">
+                <el-button size="mini" round type="primary">更换头像</el-button>
+              </el-upload>
+            </template>
+          </el-form-item>
+          <el-form-item label="主播昵称" prop="empphone">
+            <el-input style="width: 30%" v-model="userdetail.petname"></el-input>
+          </el-form-item>
+          <el-form-item label="手机" prop="empphone">
+            <el-input style="width: 30%" v-model="userdetail.empphone"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="addpersonal" round>保存</el-button>
+            <el-button type="primary" @click="restpersonal" round>取消</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </el-tabs>
 
   </div>
-
 </template>
 
 <script>
 export default {
   name: 'Personal',
   data () {
-    var validatePass = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入密码'))
-      } else {
-        if (this.ruleForm.checkPass !== '') {
-          this.$refs.ruleForm.validateField('checkPass')
-        }
+
+    let reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,14}$/;
+    var validatePwd=(rule, value, callback)=>{
+       if(this.user.backstage_upwd!=value){
+        callback(new Error('密码错误！'))
+      }else{
         callback()
       }
     }
-    var validatePass2 = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请再次输入密码'))
-      } else if (value !== this.ruleForm.pass) {
-        callback(new Error('两次输入密码不一致!'))
-      } else {
+    //新密码
+    var validateNewPwd=(rule, value, callback)=>{
+      if (!reg.test(value)) {
+        callback(new Error('密码须包含数字、字母两种元素，且密码位数为6-14位'))
+      } else if(this.rulefrom.pwd==value){
+        callback(new Error('新密码与旧密码不可一致！'))
+      }else{
+        callback()
+      }
+    }
+    //确认密码
+    var validateComfirmPwd=(rule, value, callback) =>{
+      if (!reg.test(value)) {
+        callback(new Error('密码须包含数字、字母两种元素，且密码位数为6-14位'))
+      } else if(this.rulefrom.newpwd !=value){
+        callback(new Error('确认密码与新密码不一致！'))
+      }else {
         callback()
       }
     }
     return {
-      ruleForm: {
-        pass: '',
-        checkPass: ''
+      rulefrom:{
+        pwd:"",
+        newpwd:"",
+        affirm:"",
+
       },
-      rules: {
-        pass: [
-          { validator: validatePass, trigger: 'blur' }
+      rules:{
+        pwd:[
+          { required: true, message: '请输入当前密码', trigger: 'blur' },
+          { validator: validatePwd, trigger: 'blur' }
         ],
-        checkPass: [
-          { validator: validatePass2, trigger: 'blur' }
+        newpwd:[
+            { required: true, message: '请输入新密码', trigger: 'blur' },
+            { validator: validateNewPwd, trigger: 'blur' }
+        ],
+        affirm:[
+          { required: true, message: '请输入确认密码', trigger: 'blur' },
+          { validator: validateComfirmPwd, trigger: 'blur' }
         ]
       },
+      activeTab:"userdetails",
       user: JSON.parse(sessionStorage.getItem('backstageuser')),
-      sizeForm: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      }
+      userdetail:{},
+      show:false,
+      show1:true,
     }
+  },created:function () {
+      this.checkeduser();
   },
   methods: {
-    submitForm (formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          console.log(this.user.backstage_userid)
-          console.log(this.ruleForm.pass)
-          //走axios
-          this.$axios.post("/backstage/upwd",{
-            id:this.user.backstage_userid,pwd:this.ruleForm.pass
-          }).then(response => {
-            console.info(response.data)
-          })
-          sessionStorage.removeItem('backstageuser')
-          this.$router.replace({name: 'Login'})
-
-        }
-      })
+    isshow:function () {
+      this.show1=!this.show1;
+      this.show=!this.show
     },
-    resetForm (formName) {
-      this.$refs[formName].resetFields()
+    restpersonal:function () {
+      this.show1=!this.show1;
+      this.show=!this.show
+    },
+    checkeduser:function () {
+      if(this.activeTab=="userdetails"){
+        this.$axios.post("backstage/empinfo/queryByempid",{"empid":this.user.empid}).then(response=>{
+            this.userdetail=response.data;
+        })
+      }
+      if(this.activeTab=="updatepwd"){
+        console.log("修改密码")
+      }
+
+    },
+    updatepwd:function(rulefrom){
+        this.$refs['rulefrom'].validate((valid)=>{
+          if(valid){
+           this.$axios.post("backstage/updatepwd",
+             {"backstage_upwd":this.rulefrom.newpwd,"backstage_userid":this.user.backstage_userid}).then(response=>{
+             if(response.data==1){
+               this.$refs[rulefrom].resetFields();
+               sessionStorage.removeItem("backstageuser");
+               this.$router.replace({name: "Login"})
+             }
+           })
+          }
+        })
+    },
+    restpwd:function(rulefrom){
+      this.$refs[rulefrom].resetFields();
+    },
+    addpersonal:function () {
+      this.$axios.post("backstage/empinfo/updatephoneAndpetname",
+        {"empphone":this.userdetail.empphone,
+          "empid":this.userdetail.empid,
+           "petname":this.userdetail.petname,
+          "acid":this.userdetail.acid}).then(response=>{
+            if(response.data==1){
+              this.$message({
+                type:'info',
+                message:"已保存"
+              });
+              this.restpersonal();
+            }
+      })
     },
     httpRequest (param) {
       let fd = new FormData()// FormData 对象
-      console.log(param)
       fd.append('file', param.file)// 文件对象
-      fd.append('userid', this.user.backstage_userid)
-      fd.append('username', this.user.backstage_uname)
+      fd.append('backstage_userid', this.user.backstage_userid)
+      fd.append('backstage_uname', this.user.backstage_uname)
       fd.append('flag', this.user.flag)
       let config = {
         headers: {
@@ -151,8 +222,14 @@ export default {
         }
       }
       // 上传 一般上传图片用 $axios2
-      this.$axios2.post('backstage/upload', fd).then(response => {
-        console.info(response.data)
+      //开始提交图片
+      this.$axios2.post("backstage/updatephoto",fd).then(response=>{
+          if(response.data==1){
+            this.$message({
+              type:'info',
+              message:"已修改"
+            });
+          }
       })
     }
     // 校验音频格式
