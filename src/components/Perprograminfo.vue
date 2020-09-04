@@ -349,7 +349,7 @@
               'Content-Type': 'multipart/form-data'
             }
           }
-          //上传 一般上传图片用 $axios2
+          //上传一般上传图片用 $axios2
           this.$axios2.post("backstage/programinfo/insertprograminfo",fd).then(response=>{
             if(response.data==1){
               this.dialogVisible=false;
