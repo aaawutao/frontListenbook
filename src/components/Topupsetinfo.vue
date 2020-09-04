@@ -3,8 +3,13 @@
     <el-table :data="list"  width="100%" height="550px" :stripe="true" border>
       <!-- prop显示绑定的数据的属性 -->
       <el-table-column prop="tsid" label="编号"></el-table-column>
-      <el-table-column  prop="tstype" label="充值的类型"></el-table-column>
-      <el-table-column  prop="tscustom" label="虚拟币/天数"></el-table-column>
+      <el-table-column  prop="tstype" label="充值的类型">
+        <template slot-scope="scope">
+          {{scope.row.tstype==0?'会员':'虚拟币'}}
+        </template>
+      </el-table-column>
+      <el-table-column  prop="tscustom" label="虚拟币/天数">
+      </el-table-column>
       <el-table-column  prop="tsmoney" label="真实金额"></el-table-column>
       <el-table-column  label="操作" fixed="right" width="100px">
         <template slot-scope="scope">
