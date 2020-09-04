@@ -40,15 +40,15 @@
 
       <el-tab-pane label="修改密码" name="updatepwd">
         <div>
-          <el-form :model="rulefrom" ref="rulefrom" :rules="rules" label-suffix="：" class="form">
+          <el-form :model="rulefrom" ref="rulefrom" :rules="rules" label-suffix="：" label-width="400px" class="form">
             <el-form-item label="当前密码" prop="pwd">
-              <el-input type="password"  v-model="rulefrom.pwd" style="width:25%"></el-input>
+              <el-input type="password"  v-model="rulefrom.pwd" style="width:40%"></el-input>
             </el-form-item>
             <el-form-item label="新 密 码  " prop="newpwd">
-              <el-input type="password" v-model="rulefrom.newpwd" style="width:25%"></el-input>
+              <el-input type="password" v-model="rulefrom.newpwd" style="width:40%"></el-input>
             </el-form-item>
             <el-form-item label="确认密码" prop="affirm">
-              <el-input type="password" v-model="rulefrom.affirm" style="width:25%"></el-input>
+              <el-input type="password" v-model="rulefrom.affirm" style="width:40%"></el-input>
             </el-form-item>
             <el-form-item >
               <el-button type="primary" @click="updatepwd('rulefrom')" round>提交</el-button>
