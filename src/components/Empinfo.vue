@@ -4,18 +4,28 @@
     <el-table border :data="list.slice((currentPage-1)*PageSize,currentPage*PageSize)" stripe height="400px">
       <el-table-column label="员工编号" prop="empid"></el-table-column>
       <el-table-column label="员工姓名" prop="empname"></el-table-column>
-      <el-table-column label="出生年月" prop="empbirth"></el-table-column>
+      <el-table-column   label="性别">
+        <template slot-scope="scope">
+          <span>{{getsex(scope.row.empidentity)}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column   label="出生日器">
+        <template slot-scope="scope">
+          <span>{{empbirth(scope.row.empidentity)}}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="电话" prop="empphone"></el-table-column>
       <el-table-column label="身份证编号" prop="empidentity"></el-table-column>
       <el-table-column label="学历" prop="xueli"></el-table-column>
       <el-table-column label="入职" prop="empentrydate"></el-table-column>
       <el-table-column label="离职" prop="empdimissiondate"></el-table-column>
-      <el-table-column label="操作">
-        <!-- scope：返回当前单元格 -->
-        <template slot-scope="scope">
-          <el-button type="warning" round size="mini" icon="el-icon-edit" @click="show(scope.row)"></el-button>
-        </template>
-      </el-table-column>
+      <!--<el-table-column label="操作">-->
+        <!--&lt;!&ndash; scope：返回当前单元格 &ndash;&gt;-->
+        <!--<template slot-scope="scope">-->
+          <!--<el-button type="warning" round size="mini" icon="el-icon-edit" @click="show(scope.row)"></el-button>-->
+        <!--</template>-->
+      <!--</el-table-column>-->
     </el-table>
     <el-pagination
       @size-change="handleSizeChange"
@@ -31,9 +41,9 @@
         <el-form-item label="员工姓名" prop="empname">
           <el-input v-model="empinfo.empname"></el-input>
         </el-form-item>
-        <el-form-item label="出生年月" prop="empbirth">
-          <el-input v-model="empinfo.empbirth"></el-input>
-        </el-form-item>
+        <!--<el-form-item label="出生年月" prop="empbirth">-->
+          <!--<el-input v-model="empinfo.empbirth"></el-input>-->
+        <!--</el-form-item>-->
         <el-form-item label="电话" prop="empphone">
           <el-input v-model="empinfo.empphone"></el-input>
         </el-form-item>
@@ -46,16 +56,19 @@
         <!--<el-form-item label="did" prop="did">-->
           <!--<el-input v-model="empinfo.did"></el-input>-->
         <!--</el-form-item>-->
-        <el-form-item label="入职" prop="empentrydate">
-          <el-input v-model="empinfo.empentrydate"></el-input>
-        </el-form-item>
-        <el-form-item label="离职" prop="empdimissiondate">
-          <el-input v-model="empinfo.empdimissiondate"></el-input>
-        </el-form-item>
+          <!--<el-form-item label="离职" prop="empdimissiondate">-->
+          <!--<el-date-picker-->
+            <!--v-model="empinfo.empdimissiondate"-->
+            <!--align="right"-->
+            <!--type="date"-->
+            <!--placeholder="选择日期"-->
+            <!--:picker-options="pickerOptions">-->
+          <!--</el-date-picker>-->
+          <!--</el-form-item>-->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="saves(),dialogFormVisible = false">添加</el-button>
-        <el-button type="primary" @click="update(),dialogFormVisible = false">修改</el-button>
+        <!--<el-button type="primary" @click="update(),dialogFormVisible = false">修改</el-button>-->
         <el-button @click="dialogFormVisible = false">取 消</el-button>
       </div>
     </el-dialog>
@@ -66,16 +79,34 @@
 export default {
   name: 'Empinfo',
   data () {
+
     return {
+
       pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now();
+        },
         shortcuts: [{
           text: '今天',
-          onClick (picker) {
-            picker.$emit('pick', new Date())
+          onClick(picker) {
+            picker.$emit('pick', new Date());
+          }
+        }, {
+          text: '昨天',
+          onClick(picker) {
+            const date = new Date();
+            date.setTime(date.getTime() - 3600 * 1000 * 24);
+            picker.$emit('pick', date);
+          }
+        }, {
+          text: '一周前',
+          onClick(picker) {
+            const date = new Date();
+            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+            picker.$emit('pick', date);
           }
         }]
       },
-      value1: '',
       dialogFormVisible: false,
       dialogFormVisible2: false,
       title: '',
@@ -130,7 +161,13 @@ export default {
           this.totalCount = res.data.length
         })
     },
-
+    getsex:function (idcard) {
+      return  idcard.substr(16,1)%2==1 ?'男':'女'
+    },
+    empbirth:function(empbirth){
+      let str =empbirth.substring(6, 14).slice(0, 4)+ "-" + empbirth.substring(6, 14).slice(4, 6)+ "-" + empbirth.substring(6, 14).slice(6, 8);
+      return str;
+    },
     // 每页显示的条数
     handleSizeChange (val) {
       // 改变每页显示的条数
@@ -149,12 +186,6 @@ export default {
         this.title = '添加员工'
         this.dialogFormVisible = true
         this.empinfo = {}
-      } else {
-        // 修改
-        this.title = '修改员工'
-        this.dialogFormVisible = true
-        // 复制
-        this.empinfo = Object.assign({}, row)
       }
     },
     saves: function () {
@@ -166,15 +197,15 @@ export default {
         this.listall()
       })
     },
-    update: function () {
-      console.log(this.empinfo)
-      this.$axios.post('backstage/empinfo/update', this.empinfo).then(response => {
-        if (response.data > 0) {
-          this.$message('修改成功了')
-        } else { this.$message('修改失败了') }
-        this.listall()
-      })
-    }
+    // update: function () {
+    //   console.log(this.empinfo)
+    //   this.$axios.post('backstage/empinfo/update', this.empinfo).then(response => {
+    //     if (response.data > 0) {
+    //       this.$message('修改成功了')
+    //     } else { this.$message('修改失败了') }
+    //     this.listall()
+    //   })
+    // }
   }
 }
 </script>
