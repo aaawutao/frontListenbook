@@ -100,6 +100,12 @@
        <el-table-column prop="pcreatedate" label="创建时间"></el-table-column>
        <el-table-column prop="buycount" label="售出"></el-table-column>
        <el-table-column prop="allprice" label="价格"></el-table-column>
+       <el-table-column label="章节目录">
+         <template slot-scope="scope">
+           <el-button icon="el-icon-search" @click="directory(scope.row.pid)" circle></el-button>
+           <el-button type="primary" icon="el-icon-edit" @click="adddirectory(scope.row)" circle></el-button>
+         </template>
+       </el-table-column>
        <el-table-column label="详情">
          <template slot-scope="scope">
            <el-button icon="el-icon-search" @click="querydetails(scope.row)" circle></el-button>
@@ -107,7 +113,37 @@
        </el-table-column>
      </el-table>
 
+     <el-drawer
+       title="章节目录"
+       :visible.sync="chapter"
+       :direction="direction"
+       :before-close="handleClose"
+       size="70%">
 
+       <el-table :data="chapters" :border="true">
+         <el-table-column prop="title" label="标题"></el-table-column>
+         <el-table-column prop="artist" label="作者"></el-table-column>
+         <el-table-column prop="mp3" label="音频路径"></el-table-column>
+         <el-table-column prop="state" label="是否付费">
+           <template slot-scope="scope">
+             {{scope.row.state==0?'免费':'付费'}}
+           </template>
+         </el-table-column>
+         <el-table-column prop="virtualcurrency" label="应付喜币"></el-table-column>
+         <el-table-column prop="createdate" label="上传时间"></el-table-column>
+       </el-table>
+       <div class="block">
+         <el-pagination
+           @size-change="handleSize"
+           @current-change="handleCurrent"
+           :current-page="currentPage"
+           :page-sizes="[5]"
+           :page-size="pagesize"
+           layout="total, sizes, prev, pager, next, jumper"
+           :total="total">
+         </el-pagination>
+       </div>
+     </el-drawer>
 
      <div class="block">
        <el-pagination
@@ -120,6 +156,38 @@
          :total="total">
        </el-pagination>
      </div>
+
+     <el-dialog width="40%" :before-close="restdirtor"  title="添加章节" :visible="visible">
+       <el-form  :model="modelfrom"  ref="modelfrom" label-width="100px" class="demo-ruleForm">
+         <el-form-item label="标题："  prop="title">
+           <el-input v-model="modelfrom.title"></el-input>
+         </el-form-item>
+         <el-form-item label="音频：" prop="mp3">
+           <el-upload
+             class="upload-demo"
+             ref="uploadd"
+             action=""
+             :auto-upload="false"
+             :multiple="false"
+             :limit="1"
+             :http-request="fileRequest">
+             <el-button size="small" type="primary">上传图片</el-button>
+           </el-upload>
+         </el-form-item>
+           <el-form-item label="是否付费："  prop="state">
+             <el-radio v-model="modelfrom.state" label="0">免费</el-radio>
+             <el-radio v-model="modelfrom.state" label="1">付费</el-radio>
+           </el-form-item>
+           <el-form-item label="懒币"  prop="virtualcurrency">
+             <el-input v-model="modelfrom.virtualcurrency" :disabled="modelfrom.state==0?true:false"></el-input>
+           </el-form-item>
+         <el-form-item>
+           <el-button type="primary" @click="subadddirtor" >添加</el-button>
+           <el-button @click="restdirtor">重置</el-button>
+         </el-form-item>
+       </el-form>
+
+     </el-dialog>
    </div>
 </template>
 
@@ -133,11 +201,25 @@
             pagesize: 5, //每页的数据条数
             currentPage: 1,
             list:[],
-            direction: 'btt',//设置默认
+            direction: 'rtl',//设置默认
             drawer:false,
+            chapter:false,
+            id:"",
             details:[],
             dialogVisible:false,
             programtypeinfo:{},
+            anchorinfo:{},//获取主播编号
+            multiple:"false",//是否支持多选文件
+            chapters:[],
+            visible:false,
+            modelfrom:{
+              title:"",
+              artist:"",
+              mp3:"",
+              state:"0",
+              virtualcurrency:"",
+              pid:"",
+            },
             rulefrom:{
               name:"",//名称
               poster:"",//图片
@@ -149,8 +231,7 @@
               pstate:"0",//连载/完本
               allprice:"",//价格
             },
-            anchorinfo:{},//获取主播编号
-            multiple:"false",//是否支持多选文件
+
             rules:{
                 pname:[
                   { required: true, message: '请输入名称', trigger: 'blur' },
@@ -178,6 +259,77 @@
       },created:function(){
           this.queryAll();
     },methods:{
+        fileRequest(param){
+          let forata = new FormData()// FormData 对象
+          forata.append('file', param.file)// 文件对象图片
+          forata.append("title",this.modelfrom.title)
+          forata.append("artist",this.modelfrom.artist)
+          forata.append("state",this.modelfrom.state)
+          forata.append("virtualcurrency",this.modelfrom.virtualcurrency)
+          forata.append("pid",this.modelfrom.pid)
+          forata.append("flag",this.user.flag);//用户标示
+          forata.append("backstage_uname",this.user.backstage_uname);
+          let config = {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }
+          this.$axios2.post("backstage/chapterinfo/addchapter",forata).then(response=>{
+            if(response.data==1){
+              this.modelfrom.title="";
+              this.modelfrom.virtualcurrency="";
+              this.visible=false;
+              this.$refs.uploadd.clearFiles();
+              this.queryAll();
+            }
+          })
+        },
+        subadddirtor:function(){
+          this.$refs.uploadd.submit();
+        },
+        restdirtor(done) {
+          this.$confirm('确认关闭？')
+            .then(_ => {
+              this.modelfrom.title="";
+              this.modelfrom.virtualcurrency="";
+              this.visible=false;
+              this.$refs.uploadd.clearFiles();
+              done();
+            })
+            .catch(_ => {});
+        },
+          //展开模态窗
+        adddirectory:function(row){
+          this.visible=true;
+          this.modelfrom.artist=row.petname;
+          this.modelfrom.pid=row.pid;
+
+        },
+          //展示章节
+        directory:function(pid){
+          this.chapter=true;
+          this.direction= 'rtl';
+          this.id=pid;
+          this.$axios.post("backstage/chapterinfo/chapterinfoQuery",
+            {"currentPage":this.currentPage,"pageSize":this.pagesize,"pid":this.id}).then(resp=>{
+            this.total=resp.data.total;
+            this.chapters=resp.data.list;
+          })
+        },handleSize:function(size){
+          this.pagesize=size;
+          this.directory(this.id);
+        },
+        handleCurrent:function(curPage){
+          this.currentPage=curPage;
+          this.directory(this.id);
+        },
+        handleClose(done) {
+          this.$confirm('确认关闭？')
+            .then(_ => {
+              done();
+            })
+            .catch(_ => {});
+        },
         //文件上传
         httpRequest(param){
           let fd = new FormData()// FormData 对象
@@ -214,6 +366,7 @@
           this.$confirm('确认关闭？')
             .then(_ => {
               this.dialogVisible=false;
+              this.visible=false;
               this.rulefrom={};
               this.queryAll();
               done();
@@ -237,6 +390,7 @@
         },
         querydetails:function (row) {
           this.drawer=true;
+          this.direction= 'btt';
             this.$axios.post("backstage/programinfo/programinfoAll",
               {"currentPage":this.currentPage,"pageSize":this.pagesize,"pid":row.pid,"bfid":this.user.backstage_userid}).then(resp=>{
                 console.log(resp.data.list)
@@ -257,7 +411,6 @@
               this.anchorinfo=res.data[0];
             })
           })
-
         }
       }
     }

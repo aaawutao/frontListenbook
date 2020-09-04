@@ -8,7 +8,6 @@
         :before-close="handleClose"
         size="70%">
         <el-table :data="chapters" :border="true">
-
           <el-table-column prop="title" label="标题"></el-table-column>
           <el-table-column prop="artist" label="作者"></el-table-column>
           <el-table-column prop="mp3" label="音频路径"></el-table-column>
@@ -18,9 +17,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="virtualcurrency" label="应付喜币"></el-table-column>
-
           <el-table-column prop="createdate" label="上传时间"></el-table-column>
-
         </el-table>
         <div class="block">
           <el-pagination
