@@ -33,9 +33,9 @@
      </el-drawer>
 
      <!--添加-->
-     <el-dialog width="50%" :before-close="restFrom"  title="添加" :visible="dialogVisible">
+     <el-dialog width="50%"  :before-close="restFrom"  title="添加" :visible="dialogVisible">
        <el-form :model="rulefrom" :rules="rules" ref="rulefrom"  label-width="100px" class="demo-ruleForm">
-         <el-form-item label="名称："  prop="pname">
+         <el-form-item label="名称："  prop="name">
            <el-input v-model="rulefrom.name"></el-input>
          </el-form-item>
           <el-form-item label="封面：" prop="poster">
@@ -47,10 +47,9 @@
               :multiple="false"
               :limit="1"
               :http-request="httpRequest">
-              <el-button size="small" type="primary">点击上传</el-button>
+              <el-button size="small" type="primary">上传封面图</el-button>
             </el-upload>
           </el-form-item>
-
          <el-form-item label="类型：" prop="ptid">
            <el-select v-model="rulefrom.ptid"  placeholder="请选择">
              <el-option
@@ -83,12 +82,14 @@
            <el-input type="textarea" v-model="rulefrom.pintroduction" ></el-input>
          </el-form-item>
          <el-form-item>
-           <el-button type="primary" @click="submitForm">添加</el-button>
+           <el-button type="primary" @click="submitForm('rulefrom')">添加</el-button>
            <el-button @click="restFrom">重置</el-button>
          </el-form-item>
        </el-form>
      </el-dialog>
+
      <el-button type="primary" @click="newlyprogram" >添加</el-button>
+
      <el-table style="text-align:center" :data="list"  width="100%" height="550px" :stripe="true"  border>
        <el-table-column prop="pname"  label="姓名"></el-table-column>
        <el-table-column label="封面图">
@@ -113,14 +114,19 @@
        </el-table-column>
      </el-table>
 
+
+
      <el-drawer
        title="章节目录"
        :visible.sync="chapter"
        :direction="direction"
        :before-close="handleClose"
        size="70%">
-
-       <el-table :data="chapters" :border="true">
+       <el-table
+         style="width: 100%"
+         :row-style="{height: '0'}"
+         :cell-style="{padding: '0'}"
+         :data="chapters.slice((currenPage-1)*PageSize,currenPage*PageSize)" :border="true">
          <el-table-column prop="title" label="标题"></el-table-column>
          <el-table-column prop="artist" label="作者"></el-table-column>
          <el-table-column prop="mp3" label="音频路径"></el-table-column>
@@ -132,33 +138,23 @@
          <el-table-column prop="virtualcurrency" label="应付喜币"></el-table-column>
          <el-table-column prop="createdate" label="上传时间"></el-table-column>
        </el-table>
-       <div class="block">
-         <el-pagination
-           @size-change="handleSize"
-           @current-change="handleCurrent"
-           :current-page="currentPage"
-           :page-sizes="[5]"
-           :page-size="pagesize"
-           layout="total, sizes, prev, pager, next, jumper"
-           :total="total">
-         </el-pagination>
-       </div>
+
+       <el-pagination  @size-change="handleSize"
+                       @current-change="handleCurrent"
+                       :current-page="currenPage"
+                       :page-sizes="pageSizes"
+                       :page-size="PageSize"
+                       layout="total, sizes, prev, pager, next, jumper"
+                       :total="totalCount">
+       </el-pagination>
+
      </el-drawer>
 
-     <div class="block">
-       <el-pagination
-         @size-change="handleSizeChange"
-         @current-change="handleCurrentChange"
-         :current-page="currentPage"
-         :page-sizes="[5, 10, 20]"
-         :page-size="pagesize"
-         layout="total, sizes, prev, pager, next, jumper"
-         :total="total">
-       </el-pagination>
-     </div>
 
+
+     <!--章节添加-->
      <el-dialog width="40%" :before-close="restdirtor"  title="添加章节" :visible="visible">
-       <el-form  :model="modelfrom"  ref="modelfrom" label-width="100px" class="demo-ruleForm">
+       <el-form  :model="modelfrom" :rules="checkrule"  ref="modelfrom" label-width="100px" class="demo-ruleForm">
          <el-form-item label="标题："  prop="title">
            <el-input v-model="modelfrom.title"></el-input>
          </el-form-item>
@@ -171,7 +167,7 @@
              :multiple="false"
              :limit="1"
              :http-request="fileRequest">
-             <el-button size="small" type="primary">上传图片</el-button>
+             <el-button size="small" type="primary">上传音频</el-button>
            </el-upload>
          </el-form-item>
            <el-form-item label="是否付费："  prop="state">
@@ -182,12 +178,23 @@
              <el-input v-model="modelfrom.virtualcurrency" :disabled="modelfrom.state==0?true:false"></el-input>
            </el-form-item>
          <el-form-item>
-           <el-button type="primary" @click="subadddirtor" >添加</el-button>
+           <el-button type="primary" @click="subadddirtor('modelfrom')" >添加</el-button>
            <el-button @click="restdirtor">重置</el-button>
          </el-form-item>
        </el-form>
 
      </el-dialog>
+     <div class="block">
+       <el-pagination
+         @size-change="handleSizeChange"
+         @current-change="handleCurrentChange"
+         :current-page="currentPage"
+         :page-sizes="[5, 10, 20]"
+         :page-size="pagesize"
+         layout="total, sizes, prev, pager, next, jumper"
+         :total="total">
+       </el-pagination>
+     </div>
    </div>
 </template>
 
@@ -195,6 +202,30 @@
     export default {
         name: "Perprograminfo",
       data(){
+          var checkvirtualcurrency=(rule, value, callback) =>{
+             if(this.modelfrom.state != 0){
+               callback(new Error('请输入价格！'))
+             } else{
+               callback()
+             }
+          }
+          var checkmp3=(rule, value, callback) =>{
+            if (!this.$refs.uploadd.uploadFiles.length) {
+              callback(new Error('请选择要上传的音频'))
+            }else if (this.$refs.uploadd.uploadFiles.length > 1) {
+              callback(new Error('每次上传只支持一个文件'));
+            }else{
+              callback()
+            }
+          }
+
+           var checkupload=(rule, value, callback) =>{
+             if (!this.$refs.upload.uploadFiles.length) {
+               callback(new Error('请选择要上传的图片'))
+             }else{
+               callback()
+             }
+           }
           return {
             user:JSON.parse(sessionStorage.getItem("backstageuser")),
             total: 0, //数据总数
@@ -212,6 +243,13 @@
             multiple:"false",//是否支持多选文件
             chapters:[],
             visible:false,
+            currenPage: 1,
+            // 总条数，根据接口获取数据长度(注意：这里不能为空)
+            totalCount: 1,
+            // 个数选择器（可修改）
+            pageSizes: [3, 5],
+            // 默认每页显示的条数（可修改）
+            PageSize: 3,
             modelfrom:{
               title:"",
               artist:"",
@@ -231,22 +269,29 @@
               pstate:"0",//连载/完本
               allprice:"",//价格
             },
-
+            checkrule:{
+              title:[
+                { required: true, message: '请输入标题', trigger: 'blur' },
+              ],
+              virtualcurrency:[
+                { validator: checkvirtualcurrency, trigger: 'blur' }
+              ],
+              mp3:[
+                { validator: checkmp3, trigger: 'change' }
+              ]
+            },
             rules:{
-                pname:[
-                  { required: true, message: '请输入名称', trigger: 'blur' },
+                name:[
+                  {required: true, message: '请输入名称', trigger: 'blur' },
                 ],
+              poster:[
+                { validator: checkupload, trigger: 'blur' }
+              ],
               allprice:[
                   { required: true, message: '请输入价格', trigger: 'blur' },
               ],
-              pstate:[
-                { required: true, message: '请选择连载/完本', trigger: 'change' }
-              ],
               ptid:[
                 { required: true, message: '请选择类型', trigger: 'change' }
-              ],
-              chapterorder:[
-                { required: true, message: '请选择章节排序', trigger: 'change' }
               ],
               psource:[
                 { required: true, message: '请输入来源', trigger: 'blur' },
@@ -276,22 +321,27 @@
           }
           this.$axios2.post("backstage/chapterinfo/addchapter",forata).then(response=>{
             if(response.data==1){
-              this.modelfrom.title="";
-              this.modelfrom.virtualcurrency="";
+              this.$refs['modelfrom'].resetFields();
               this.visible=false;
               this.$refs.uploadd.clearFiles();
               this.queryAll();
             }
           })
         },
-        subadddirtor:function(){
-          this.$refs.uploadd.submit();
+        subadddirtor:function(modelfrom){
+          this.$refs['modelfrom'].validate((valid)=>{
+              if(valid){
+                if(this.modelfrom.state==0){
+                  this.modelfrom.virtualcurrency="";
+                }
+                this.$refs.uploadd.submit();
+              }
+          })
         },
         restdirtor(done) {
           this.$confirm('确认关闭？')
             .then(_ => {
-              this.modelfrom.title="";
-              this.modelfrom.virtualcurrency="";
+              this.$refs['modelfrom'].resetFields();
               this.visible=false;
               this.$refs.uploadd.clearFiles();
               done();
@@ -310,18 +360,22 @@
           this.chapter=true;
           this.direction= 'rtl';
           this.id=pid;
-          this.$axios.post("backstage/chapterinfo/chapterinfoQuery",
-            {"currentPage":this.currentPage,"pageSize":this.pagesize,"pid":this.id}).then(resp=>{
-            this.total=resp.data.total;
-            this.chapters=resp.data.list;
+          this.$axios.post("backstage/chapterinfo/chapterinfoQuery", {"pid":this.id}).then(resp=>{
+            this.totalCount = resp.data.length;
+            this.handleCurrent(1)
+            this.chapters=resp.data
           })
-        },handleSize:function(size){
-          this.pagesize=size;
-          this.directory(this.id);
         },
-        handleCurrent:function(curPage){
-          this.currentPage=curPage;
-          this.directory(this.id);
+        handleSize(val) {
+          // 改变每页显示的条数
+          this.PageSize = val
+          // 注意：在改变每页显示的条数时，要将页码显示到第一页
+          this.currenPage = 1
+        },
+        // 显示第几页
+        handleCurrent(val) {
+          // 改变默认的页数
+          this.currenPage = val
         },
         handleClose(done) {
           this.$confirm('确认关闭？')
@@ -353,21 +407,28 @@
           this.$axios2.post("backstage/programinfo/insertprograminfo",fd).then(response=>{
             if(response.data==1){
               this.dialogVisible=false;
-              this.rulefrom={};
+              this.$refs['rulefrom'].resetFields();
+              this.$refs.upload.clearFiles();
               this.queryAll();
             }
           })
         },
-        submitForm:function(){
-          this.rulefrom.acid= this.anchorinfo.acid;
-          this.$refs.upload.submit();
+        submitForm:function(rulefrom){
+          this.$refs['rulefrom'].validate((valid)=>{
+            if(valid){
+              this.rulefrom.acid= this.anchorinfo.acid;
+              this.$refs.upload.submit();
+            }
+          })
+          //
         },
         restFrom(done) {
           this.$confirm('确认关闭？')
             .then(_ => {
               this.dialogVisible=false;
               this.visible=false;
-              this.rulefrom={};
+              this.$refs['rulefrom'].resetFields();
+              this.$refs.upload.clearFiles();
               this.queryAll();
               done();
             })
@@ -391,11 +452,11 @@
         querydetails:function (row) {
           this.drawer=true;
           this.direction= 'btt';
-            this.$axios.post("backstage/programinfo/programinfoAll",
-              {"currentPage":this.currentPage,"pageSize":this.pagesize,"pid":row.pid,"bfid":this.user.backstage_userid}).then(resp=>{
-                console.log(resp.data.list)
-                 this.details=resp.data.list;
-            })
+          this.drawer=true;
+          this.direction= 'btt';
+          this.$axios.post("backstage/programinfo/querybypid",{"pid":row.pid}).then(response=>{
+            this.details=response.data;
+          })
         },
         handleClose(done) {
           this.$confirm('确认关闭？')

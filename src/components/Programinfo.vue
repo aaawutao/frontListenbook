@@ -7,7 +7,12 @@
         :direction="direction"
         :before-close="handleClose"
         size="70%">
-        <el-table :data="chapters" :border="true">
+
+        <el-table
+          style="width: 100%"
+          :row-style="{height: '0'}"
+          :cell-style="{padding: '0'}" :data="chapters.slice((currenPage-1)*PageSize,currenPage*PageSize)"
+          :border="true">
           <el-table-column prop="title" label="标题"></el-table-column>
           <el-table-column prop="artist" label="作者"></el-table-column>
           <el-table-column prop="mp3" label="音频路径"></el-table-column>
@@ -19,18 +24,14 @@
           <el-table-column prop="virtualcurrency" label="应付喜币"></el-table-column>
           <el-table-column prop="createdate" label="上传时间"></el-table-column>
         </el-table>
-        <div class="block">
-          <el-pagination
-            @size-change="handleSize"
-            @current-change="handleCurrent"
-            :current-page="currentPage"
-            :page-sizes="[5]"
-            :page-size="pagesize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="total">
-          </el-pagination>
-        </div>
-
+        <el-pagination  @size-change="handleSize"
+                        @current-change="handleCurrent"
+                        :current-page="currenPage"
+                        :page-sizes="pageSizes"
+                        :page-size="PageSize"
+                        layout="total, sizes, prev, pager, next, jumper"
+                        :total="totalCount">
+        </el-pagination>
       </el-drawer>
 
       <el-drawer
@@ -130,10 +131,18 @@
             details:[],
             chapters:[],
             id:"",
+            currenPage: 1,
+            // 总条数，根据接口获取数据长度(注意：这里不能为空)
+            totalCount: 1,
+            // 个数选择器（可修改）
+            pageSizes: [3, 5],
+            // 默认每页显示的条数（可修改）
+            PageSize: 3,
 
           }
         },created:function(){
           this.queryList();
+
       },methods:{
           queryList:function () {
             this.$axios.post("backstage/programinfo/programinfoAll",
@@ -145,7 +154,6 @@
         handleSizeChange(size) {
           this.pagesize=size;
           this.queryList();
-
         },
         handleCurrentChange(curPage) {
           this.currentPage=curPage;
@@ -153,30 +161,32 @@
         },
         querydetails:function (row) {
           this.drawer=true;
-          this.direction= 'btt',
-          this.$axios.post("backstage/programinfo/programinfoAll",
-            {"currentPage":this.currentPage,"pageSize":this.pagesize,"pid":row.pid}).then(resp=>{
-             this.details=resp.data.list;
+          this.direction= 'btt';
+          this.$axios.post("backstage/programinfo/querybypid",{"pid":row.pid}).then(response=>{
+            this.details=response.data;
           })
+        }, // 每页显示的条数
+        handleSize(val) {
+          // 改变每页显示的条数
+          this.PageSize = val
+          // 注意：在改变每页显示的条数时，要将页码显示到第一页
+          this.currenPage = 1
+        },
+        // 显示第几页
+        handleCurrent(val) {
+          // 改变默认的页数
+          this.currenPage = val
         },
         //章节目录
         querychapters:function(pid){
           this.chapter=true;
           this.direction= 'rtl';
           this.id=pid;
-         this.$axios.post("backstage/chapterinfo/chapterinfoQuery",
-            {"currentPage":this.currentPage,"pageSize":this.pagesize,"pid":this.id}).then(resp=>{
-              console.log(resp.data.list);
-              this.total=resp.data.total;
-              this.chapters=resp.data.list;
+          this.$axios.post("backstage/chapterinfo/chapterinfoQuery", {"pid":this.id}).then(resp=>{
+            this.totalCount = resp.data.length;
+            this.handleCurrent(1)
+            this.chapters=resp.data
           })
-        },handleSize:function(size){
-          this.pagesize=size;
-          this.querychapters(this.id);
-        },
-        handleCurrent:function(curPage){
-          this.currentPage=curPage;
-          this.querychapters(this.id);
         },
         handleClose(done) {
           this.$confirm('确认关闭？')
@@ -201,5 +211,6 @@
 </script>
 
 <style scoped>
+
 
 </style>
