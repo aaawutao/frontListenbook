@@ -93,13 +93,13 @@ export default {
 
     return {
       options: [{
-        value: '选项1',
+        value: '本科',
         label: '本科'
       }, {
-        value: '选项2',
+        value: '大专',
         label: '大专'
       }, {
-        value: '选项3',
+        value: '高中',
         label: '高中'
       }],
       value: '',
