@@ -50,8 +50,19 @@
         <el-form-item label="身份证编号" prop="empidentity">
           <el-input v-model="empinfo.empidentity"></el-input>
         </el-form-item>
+
+
+
         <el-form-item label="学历" prop="xueli">
-          <el-input v-model="empinfo.xueli"></el-input>
+          <el-select v-model="empinfo.xueli" placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          <!--<el-input v-model="empinfo.xueli"></el-input>-->
         </el-form-item>
         <!--<el-form-item label="did" prop="did">-->
           <!--<el-input v-model="empinfo.did"></el-input>-->
@@ -81,7 +92,17 @@ export default {
   data () {
 
     return {
-
+      options: [{
+        value: '选项1',
+        label: '本科'
+      }, {
+        value: '选项2',
+        label: '大专'
+      }, {
+        value: '选项3',
+        label: '高中'
+      }],
+      value: '',
       pickerOptions: {
         disabledDate(time) {
           return time.getTime() > Date.now();
@@ -196,7 +217,7 @@ export default {
         } else { this.$message('添加失败了') }
         this.listall()
       })
-    },
+    }
     // update: function () {
     //   console.log(this.empinfo)
     //   this.$axios.post('backstage/empinfo/update', this.empinfo).then(response => {

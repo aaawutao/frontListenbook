@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-aside width="200px" >
+    <el-aside width="200px">
       <el-menu  default-active="1" class="el-menu-vertical-demo" :router="true">
         <div v-for="m in this.user.urls">
           <el-submenu  :index="m.id.toString()" :route="{name:m.menuurl}" >
@@ -15,7 +15,7 @@
       </el-menu >
     </el-aside>
     <el-container>
-      <el-header style="text-align: right; font-size: 12px">
+      <el-header style="text-align: right; font-size: 12px ;position:relative; right:200px " >
         <el-dropdown @command="handlerCommand">
           <i class="el-icon-setting" style="margin-right: 15px"></i>
           <el-dropdown-menu slot="dropdown">
@@ -74,10 +74,12 @@
     line-height: 60px;
     color: #333;
     background-color: #b3c0d1;
+    width: 1250px;
   }
 
   .el-container {
     height: 100%;
+
   }
 
   .el-aside {
@@ -92,5 +94,8 @@
 
   .el-button+.el-button {
     margin-left: 2px;
+  }
+  aside.el-aside{
+    margin-top: 60px;
   }
 </style>
