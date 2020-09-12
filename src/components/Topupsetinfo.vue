@@ -11,13 +11,13 @@
       <el-table-column  prop="tscustom" label="虚拟币/天数">
       </el-table-column>
       <el-table-column  prop="tsmoney" label="真实金额"></el-table-column>
-      <el-table-column  label="操作" fixed="right" width="100px">
-        <template slot-scope="scope">
-          <!--<el-button type="text" @click="showByrow(scope.row)">修改</el-button>
-          <el-button type="text" @click="delBytid(scope.row)" >删除</el-button>-->
-          <el-button type="danger" icon="el-icon-delete" circle></el-button>
-        </template>
-      </el-table-column>
+      <!--<el-table-column  label="操作" fixed="right" width="100px">-->
+        <!--<template slot-scope="scope">-->
+          <!--&lt;!&ndash;<el-button type="text" @click="showByrow(scope.row)">修改</el-button>-->
+          <!--<el-button type="text" @click="delBytid(scope.row)" >删除</el-button>&ndash;&gt;-->
+          <!--<el-button type="danger" icon="el-icon-delete" circle></el-button>-->
+        <!--</template>-->
+      <!--</el-table-column>-->
     </el-table>
 
     <div class="block">
