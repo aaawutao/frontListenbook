@@ -27,9 +27,6 @@
           <el-form-item label="身份证号" prop="empphone">
             <span>{{userdetail.empidentity}}</span>
           </el-form-item>
-          <el-form-item label="个人介绍" prop="empphone">
-            <span>{{userdetail.backstage_js}}</span>
-          </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="isshow" round>修改信息</el-button>
           </el-form-item>
@@ -179,6 +176,7 @@ export default {
 
     },
     updatepwd:function(rulefrom){
+
         this.$refs['rulefrom'].validate((valid)=>{
           if(valid){
            this.$axios.post("backstage/updatepwd",
@@ -194,6 +192,7 @@ export default {
     },
     restpwd:function(rulefrom){
       this.$refs[rulefrom].resetFields();
+
     },
     addpersonal:function () {
       this.$axios.post("backstage/empinfo/updatephoneAndpetname",

@@ -74,7 +74,7 @@
     line-height: 60px;
     color: #333;
     background-color: #b3c0d1;
-    width: 1250px;
+    width:1510px;;
   }
 
   .el-container {

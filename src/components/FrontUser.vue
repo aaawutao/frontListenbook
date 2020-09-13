@@ -4,7 +4,7 @@
         <el-table-column prop="front_username"  label="名称"></el-table-column>
         <el-table-column label="头像">
           <template slot-scope="scope">
-            <img :src="scope.row" style="width: 40px;height: 40px;vertical-align: middle;">
+            <img :src="scope.row.front_userpic" style="width: 50px;height: 50px;vertical-align: middle;">
           </template>
         </el-table-column>
         <el-table-column prop="front_userphone" label="手机号"></el-table-column>
@@ -12,7 +12,7 @@
        <!-- 0.正常 1.禁用.2 vip-->
         <el-table-column prop="front_userstate" label="用户状态">
           <template slot-scope="scope">
-            <p v-if="scope.row.front_userstate==0">正常</p>
+            <p v-if="scope.row.front_userstate==0">非会员</p>
             <p v-if="scope.row.front_userstate==1">禁用</p>
             <p v-if="scope.row.front_userstate==2">VIP会员</p>
           </template>
@@ -27,8 +27,6 @@
             <p v-if="scope.row.front_userflag==3">机构</p>
           </template>
         </el-table-column>
-        <!--<el-table-column prop="flag" label="是否后台用户"></el-table-column>-->
-        <el-table-column prop="front_userqqflag" label="QQ登陆"></el-table-column>
         <el-table-column prop="front_usermoney" label="用户虚拟币"></el-table-column>
         <el-table-column prop="front_userwd" label="提现金额"></el-table-column>
 
@@ -56,7 +54,6 @@
             total: 0, //数据总数
             pagesize: 5, //每页的数据条数
             currentPage: 1, //默认
-
           }
         },created:function () {
         this.queryFrontUser();
@@ -75,11 +72,11 @@
         },
         handleSizeChange(size) {
           this.pagesize=size;
-
+          this.queryFrontUser();
         },
         handleCurrentChange(curPage) {
           this.currentPage=curPage;
-
+          this.queryFrontUser();
         }
       }
     }

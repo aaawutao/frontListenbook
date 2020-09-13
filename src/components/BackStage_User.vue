@@ -13,7 +13,6 @@
         <el-table :data="userdetail"  :border="true">
           <el-table-column prop="empname"  label="姓名"></el-table-column>
           <el-table-column prop="dname" label="部门"></el-table-column>
-          <el-table-column prop="empbirth" label="出生日期"></el-table-column>
           <el-table-column prop="empidentity" label="身份证号"></el-table-column>
           <el-table-column prop="empphone" label="手机号"></el-table-column>
           <el-table-column prop="xueli" label="学历"></el-table-column>

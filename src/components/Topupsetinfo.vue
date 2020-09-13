@@ -5,7 +5,7 @@
       <el-table-column prop="tsid" label="编号"></el-table-column>
       <el-table-column  prop="tstype" label="充值的类型">
         <template slot-scope="scope">
-          {{scope.row.tstype==0?'会员':'虚拟币'}}
+          {{scope.row.tstype==0?'虚拟币':'会员'}}
         </template>
       </el-table-column>
       <el-table-column  prop="tscustom" label="虚拟币/天数">
